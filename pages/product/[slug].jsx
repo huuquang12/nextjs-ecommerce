@@ -23,15 +23,21 @@ export default function ProductScreen() {
   const { slug } = router.query;
 
   const product = data.products.find((a) => a.slug === slug);
+
+  const addToCartHandler = () => {
+    
+  }
+
   if (!product) {
     return <div>Product Not Found</div>;
   }
+
   return (
     <Layout title={product.name} description={product.description}>
       <div className={classes.section}>
         <NextLink href="/" passHref>
           <Link color="secondary">
-            <Typography >Back to Home</Typography>
+            <Typography>Back to Home</Typography>
           </Link>
         </NextLink>
       </div>
@@ -47,8 +53,10 @@ export default function ProductScreen() {
         </Grid>
         <Grid item md={3} xs={12}>
           <List>
-          <ListItem>
-              <Typography component="h1" variant="h1">{product.name}</Typography>
+            <ListItem>
+              <Typography component="h1" variant="h1">
+                {product.name}
+              </Typography>
             </ListItem>
             <ListItem>
               <Typography>Category: {product.category}</Typography>
@@ -93,7 +101,12 @@ export default function ProductScreen() {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button fullWidth variant="contained" color="primary">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={addToCartHandler}
+                >
                   Add to Cart
                 </Button>
               </ListItem>

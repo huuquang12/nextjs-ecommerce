@@ -10,7 +10,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       countInStock: 20,
-      description: "",
+      description: "Nike shoes",
     },
     {
       name: "Nike Jordan Mid",
@@ -22,7 +22,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       countInStock: 20,
-      description: "",
+      description: "Nike shoes",
     },
     {
       name: "Nike Running",
@@ -34,7 +34,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       countInStock: 20,
-      description: "",
+      description: "Nike shoes",
     },
     {
       name: "Nike Air OG",
@@ -46,7 +46,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       countInStock: 20,
-      description: "",
+      description: "Nike shoes",
     },
     {
       name: "Nike Retro 4",
@@ -58,7 +58,7 @@ const data = {
       rating: 4.5,
       numReviews: 10,
       countInStock: 20,
-      description: "",
+      description: "Nike shoes",
     },
   ],
 };
