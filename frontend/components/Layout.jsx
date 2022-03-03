@@ -7,11 +7,14 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
+  Badge,
 } from "@material-ui/core";
 import Head from "next/head";
 import React from "react";
 import useStyles from "../utils/styles";
 import NextLink from "next/link";
+import { useContext } from "react";
+import { Store } from "../utils/Store";
 
 const theme = createMuiTheme({
   typography: {
@@ -38,6 +41,10 @@ const theme = createMuiTheme({
 });
 
 export default function Layout({ title, description, children }) {
+  const { state, dispatch } = useContext(Store);
+
+  const { cart } = state;
+
   const classes = useStyles();
 
   return (
@@ -58,7 +65,15 @@ export default function Layout({ title, description, children }) {
             <div className={classes.grow}></div>
             <div>
               <NextLink href="/cart" passHref>
-                <Link>Cart</Link>
+                <Link>
+                  {cart.cartItems.length > 0 ? (
+                    <Badge color="primary" badgeContent={cart.cartItems.length}>
+                      Cart
+                    </Badge>
+                  ) : (
+                    "Cart"
+                  )}
+                </Link>
               </NextLink>
               <NextLink href="/login" passHref>
                 <Link>Login</Link>

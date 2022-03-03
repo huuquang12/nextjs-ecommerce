@@ -1,9 +1,3 @@
-import { useRouter } from "next/router";
-import React from "react";
-import Layout from "../../components/Layout";
-import data from "../../utils/data";
-import NextLink from "next/link";
-import Image from "next/image";
 import {
   Button,
   Card,
@@ -13,24 +7,41 @@ import {
   ListItem,
   Typography,
 } from "@material-ui/core";
+import axios from "axios";
+import Image from "next/image";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import React, { useContext } from "react";
+import Layout from "../../components/Layout";
+import { Store } from "../../utils/Store";
 import useStyles from "../../utils/styles";
+import Product from "../../models/Product";
+import db from "../../utils/db";
 
-export default function ProductScreen() {
-  const classes = useStyles();
-
+export default function ProductScreen(props) {
   const router = useRouter();
 
-  const { slug } = router.query;
+  const { state, dispatch } = useContext(Store);
 
-  const product = data.products.find((a) => a.slug === slug);
-
-  const addToCartHandler = () => {
-    
-  }
-
+  const { product } = props;
   if (!product) {
     return <div>Product Not Found</div>;
   }
+
+  const classes = useStyles();
+
+  const addToCartHandler = async () => {
+    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+
+    if (data.countInStock < quantity) {
+      window.alert("Sorry. This product is out of stock");
+      return;
+    }
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    router.push("/cart");
+  };
 
   return (
     <Layout title={product.name} description={product.description}>
@@ -116,4 +127,18 @@ export default function ProductScreen() {
       </Grid>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+
+  await db.connect();
+  const product = await Product.findOne({ slug }).lean();
+  await db.disconnect();
+  return {
+    props: {
+      product: db.convertDocToObj(product),
+    },
+  };
 }

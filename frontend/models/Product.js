@@ -9,8 +9,8 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     brand: { type: String, required: true },
     rating: { type: Number, required: true, default: 0 },
-    number: { type: Number, required: true, default: 0 },
-    country: { type: String, required: true, default: 0 },
+    numReviews: { type: Number, required: true, default: 0 },
+    countInStock: { type: Number, required: true, default: 0 },
     description: { type: String, required: true },
   },
   {
@@ -20,5 +20,4 @@ const productSchema = new mongoose.Schema(
 
 const Product =
   mongoose.models.Product || mongoose.model("Product", productSchema);
-
 export default Product;
