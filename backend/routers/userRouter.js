@@ -50,7 +50,137 @@ router.post('/register', (req, res) => {
         }
     });
 });
+router.post('/login', (req, res) => {
+    User.findOne({username: req.body.username})
+    .select('_id username email password')
+    .exec()
+    .then(user => {
+        if(user){
+            bcrypt.compare(req.body.password, user.password, (err, result) => {
+                if(err){
+                    return res.status(500).json({
+                        message: 'Đăng nhập thất bại'
+                    })
+                }else{
+                    if(result){
+                        const payload = {
+                            userId: user._id,
+                            username: user.username, 
+                            iat:  Math.floor(Date.now() / 1000) - 30,
+                            exp: Math.floor(Date.now() / 1000) + (60 * 60 * 60 * 24),
+                        }
+                        jwt.sign(payload, 'mysecretkey', (err, token) => {
+                            if(err){
+                                return res.status(500).JSON({
+                                    message: 'Xác thực thất bại'
+                                });
+                            }else{
+                                res.status(200).json({
+                                    message: {
+                                        user: {
+                                            userId: user._id,
+                                            username: user.username,
+                                            //email: user.email
+                                        },
+                                        token: token
+                                    }
+                                })
+                            }
+                        })
+                    }else{
+                        res.status(500).json({
+                            message: 'Mật khẩu không chính xác'
+                        });
+                    }
+                }
+            });
+        }else{
+            res.status(500).json({
+                message: 'Username không tồn tại'
+            });
+        }
+    })
+    .catch(error => {
+        res.status(500).json({
+            error: error
+        });
+    })
+});
 
+router.put("/:id",  async (req,res) => {
+    const userId = req.params.id
+    const user = await User.findById({_id: userId})
+    if (user) {
+        user.email = req.body.email
+        user.address = req.body.address
+        user.phone = req.body.phone
+        user.name = req.body.name
+        const updateUser = await user.save()
+        res.status(201).json({
+            message: updateUser
+        })
+    } else {
+        res.status(404).json({
+            message: 'Not found'
+        })
+    }
+})
+router.get('/', async (req,res,next) =>{
+    await User.find()
+    .then(users=>{
+        res.status(201).json({
+            message: users
+        })
+    })
+    .catch(error => {
+        res.status(500).json({
+            error: error
+        })
+
+    })
+})
+
+router.get('/:id', async (req, res) => {
+    const userId = req.params.id
+    await User.findOne({_id : userId})
+    .then(user => {
+        res.status(200).json({
+            message: user
+        })
+    })
+    .catch(error => {
+        res.status(500).json({
+            error: error
+        })
+    })
+
+});
+
+router.put('/:id/reset', async (req,res) => {
+    const resetPasswod = await User.findById(req.params.id)
+    if (resetPasswod) {
+        bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if(err){
+                return res.status(500).json({
+                    error: 'Đã có lỗi xảy ra'
+                });
+            }else{
+                resetPasswod.password = hash
+                await resetPasswod.save()
+                .then(resetPasswod => {
+                    res.status(201).json({
+                        message: resetPasswod
+                    })
+                })
+                .catch(error => {
+                    res.status(500).json({
+                        error: error
+                    })
+                })
+            }
+        })
+    }
+})
 
 
 module.exports = router;
