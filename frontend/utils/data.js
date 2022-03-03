@@ -9,7 +9,7 @@ const data = {
       brand: "Nike",
       rating: 4.5,
       numReviews: 10,
-      countInStock: 20,
+      countInStock: 10,
       description: "Nike shoes",
     },
     {
@@ -21,7 +21,7 @@ const data = {
       brand: "Nike",
       rating: 4.5,
       numReviews: 10,
-      countInStock: 20,
+      countInStock: 10,
       description: "Nike shoes",
     },
     {
@@ -33,7 +33,7 @@ const data = {
       brand: "Nike",
       rating: 4.5,
       numReviews: 10,
-      countInStock: 20,
+      countInStock: 10,
       description: "Nike shoes",
     },
     {
@@ -45,7 +45,7 @@ const data = {
       brand: "Nike",
       rating: 4.5,
       numReviews: 10,
-      countInStock: 20,
+      countInStock: 10,
       description: "Nike shoes",
     },
     {
@@ -57,7 +57,7 @@ const data = {
       brand: "Nike",
       rating: 4.5,
       numReviews: 10,
-      countInStock: 20,
+      countInStock: 10,
       description: "Nike shoes",
     },
   ],
