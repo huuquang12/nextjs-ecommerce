@@ -8,14 +8,12 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import Layout from "../components/Layout";
-import NextLink from "next/link";
-import db from "../utils/db";
-import Product from "../models/Product";
-import { useRouter } from "next/router";
-import { Store } from "../utils/Store";
-import { useContext } from "react";
 import axios from "axios";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useContext } from "react";
+import Layout from "../components/Layout";
+import { Store } from "../utils/Store";
 
 export default function Home(props) {
   const router = useRouter();
@@ -27,7 +25,9 @@ export default function Home(props) {
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/products/${product._id}`);
+    const { data } = await axios.get(
+      `http://localhost:8000/api/products/${product._id}`
+    );
 
     if (data.countInStock < quantity) {
       window.alert("Sorry. This product is out of stock");
@@ -79,13 +79,12 @@ export default function Home(props) {
   );
 }
 
-export async function getServerSideProps() {
-  await db.connect();
-  const products = await Product.find({}).lean();
-  await db.disconnect();
+export async function getServerSideProps(context) {
+  const res = await fetch("http://localhost:8000/api/products/");
+  const products = await res.json();
   return {
     props: {
-      products: products.map(db.convertDocToObj),
+      products: products,
     },
   };
 }

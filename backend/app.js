@@ -5,12 +5,17 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser')
 
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/nextjs-ecommerce', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 
 // const adminRoutes = require('./routes/admins');
 
 const userRouter = require('./routers/userRouter');
-// const productRouter = require('./router/productRouter');
+const productRouter = require('./routers/productRouter');
 // const orderRouter = require('./router/orderRouter');
 
 dotenv.config();
@@ -20,23 +25,23 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/mydb";
+// var MongoClient = require('mongodb').MongoClient;
+// var url = "mongodb://localhost:27017/nextjs-ecommerce";
 
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  console.log("Database created!");
-  db.close();
-});
+// MongoClient.connect(url, function (err, db) {
+//   if (err) throw err;
+//   console.log("Database created!");
+//   db.close();
+// });
 
 app.use(cors());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ 
-    extended: false 
+app.use(bodyParser.urlencoded({
+  extended: false
 }))
 
 app.use('/api/users', userRouter);
-// app.use('/api/products', productRouter);
+app.use('/api/products', productRouter);
 // app.use('/api/orders', orderRouter);
 // app.use('/api/uploads', uploadRouter);
 
