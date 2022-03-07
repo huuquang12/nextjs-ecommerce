@@ -2,8 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const mongo = require("mongodb");
-const jwt = require("jsonwebtoken");
+const generateToken = require("../middleware/authenticate")
 
 const data = require("../data.js");
 
@@ -16,102 +15,39 @@ router.get('/seed',
         res.send({ createdUsers });
     })
 
-router.post("/register", (req, res) => {
-    User.findOne({ email: req.body.email })
-        .exec()
-        .then((user) => {
-            if (user) {
-                return res.status(500).json({
-                    message: "Email đã tồn tại",
-                });
-            } else {
-                bcrypt.hash(req.body.password, 10, (err, hash) => {
-                    if (err) {
-                        return res.status(500).json({
-                            error: "Đã có lỗi xảy ra",
-                        });
-                    } else {
-                        const user = new User({
-                            _id: new mongoose.Types.ObjectId(),
-                            name: req.body.name,
-                            email: req.body.email,
-                            password: hash,
-                            //createdAt: new Date().toISOString()
-                        });
-                        user
-                            .save()
-                            .then((doc) => {
-                                res.status(201).json({
-                                    //message: 'Đăng ký thành công'
-                                    message: user,
-                                });
-                            })
-                            .catch((er) => {
-                                res.status(500).json({
-                                    error: er,
-                                });
-                            });
-                    }
-                });
-            }
-        });
+router.post("/register", async (req, res) => {
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8),
+        isAdmin: false,
+    });
+    const createdUser = await user.save();
+    res.send({
+        _id: createdUser._id,
+        name: createdUser.name,
+        email: createdUser.email,
+        isAdmin: createdUser.isAdmin,
+        token: generateToken(createdUser),
+    })
 });
-router.post("/login", (req, res) => {
-    User.findOne({ email: req.body.email })
-        .select("_id password")
-        .exec()
-        .then((user) => {
-            if (user) {
-                bcrypt.compare(req.body.password, user.password, (err, result) => {
-                    if (err) {
-                        return res.status(500).json({
-                            message: "Login failed",
-                        });
-                    } else {
-                        if (result) {
-                            const payload = {
-                                userId: user._id,
-                                password: user.password,
-                                iat: Math.floor(Date.now() / 1000) - 30,
-                                exp: Math.floor(Date.now() / 1000) + 60 * 60 * 60 * 24,
-                            };
-                            jwt.sign(payload, "mysecretkey", (err, token) => {
-                                if (err) {
-                                    return res.status(500).JSON({
-                                        message: "Xác thực thất bại",
-                                    });
-                                } else {
-                                    res.status(200).json({
-                                        message: {
-                                            user: {
-                                                userId: user._id,
-                                                password: user.password,
-                                                //email: user.email
-                                            },
-                                            token: token,
-                                        },
-                                    });
-                                }
-                            });
-                        } else {
-                            res.status(500).json({
-                                message: "Password incorrect",
-                            });
-                        }
-                    }
-                });
-            } else {
-                res.status(500).json({
-                    message: "Email incorrect",
-                });
-            }
-        })
-        .catch((error) => {
-            res.status(500).json({
-                error: error,
+
+router.post('/login', async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+        if (bcrypt.compareSync(req.body.password, user.password)) {
+            res.send({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin,
+                token: generateToken(user),
             });
-        });
-});
+            return;
+        }
+        res.status(401).send({ message: 'Invalid email or password' });
+    }
+})
 
 router.put("/:id", async (req, res) => {
     const userId = req.params.id;

@@ -24,9 +24,8 @@ import { useSnackbar } from "notistack";
 const useStyles = makeStyles({
   paperStyle: {
     padding: 20,
-    height: 410,
+    height: 560,
     width: 400,
-    justifyContent: "center",
     margin: "30px auto",
   },
   avatarStyle: { backgroundColor: "#005792" },
@@ -44,7 +43,6 @@ export default function LoginScreen() {
     control,
     formState: { errors },
   } = useForm();
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const classes = useStyles();
@@ -60,12 +58,17 @@ export default function LoginScreen() {
     }
   }, []);
 
-  const submitHandler = async ({ email, password }) => {
+  const submitHandler = async ({ name, email, password, confirmPassword }) => {
     closeSnackbar();
+    if (password !== confirmPassword) {
+      enqueueSnackbar("Passwords doesn't match", { variant: "error" });
+      return;
+    }
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/api/users/login",
+        "http://localhost:8000/api/users/register",
         {
+          name,
           email,
           password,
         }
@@ -84,7 +87,7 @@ export default function LoginScreen() {
   return (
     <div>
       <Head>
-        <title>Login</title>
+        <title>Register</title>
       </Head>
       <Grid>
         <form onSubmit={handleSubmit(submitHandler)}>
@@ -93,8 +96,36 @@ export default function LoginScreen() {
               <Avatar className={classes.avatarStyle}>
                 <AccountCircleIcon />
               </Avatar>
-              <h2>Sign In</h2>
+              <h2>Sign Up</h2>
             </Grid>
+            <Controller
+              name="name"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 4,
+              }}
+              render={({ field }) => (
+                <TextField
+                  className={classes.btnstyle}
+                  variant="outlined"
+                  label="Name"
+                  inputProps={{ type: "name" }}
+                  fullWidth
+                  error={Boolean(errors.name)}
+                  helperText={
+                    errors.name
+                      ? errors.name.type === "minLength"
+                        ? "Name length is more than 1"
+                        : "Name is required"
+                      : ""
+                  }
+                  {...field}
+                />
+              )}
+            ></Controller>
+
             <Controller
               name="email"
               control={control}
@@ -122,7 +153,6 @@ export default function LoginScreen() {
                 />
               )}
             ></Controller>
-
             <Controller
               name="password"
               control={control}
@@ -150,6 +180,34 @@ export default function LoginScreen() {
                 />
               )}
             ></Controller>
+
+            <Controller
+              name="confirmPassword"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 6,
+              }}
+              render={({ field }) => (
+                <TextField
+                  className={classes.btnstyle}
+                  variant="outlined"
+                  label="Confirm Password"
+                  type="password"
+                  fullWidth
+                  error={Boolean(errors.confirmPassword)}
+                  helperText={
+                    errors.confirmPassword
+                      ? errors.confirmPassword.type === "minLength"
+                        ? "Password must be at least 6 characters"
+                        : "Confirm  Password is required"
+                      : ""
+                  }
+                  {...field}
+                />
+              )}
+            ></Controller>
             <div className={classes.divstyle}>
               <FormControlLabel
                 control={<Checkbox name="checkedB" color="primary" />}
@@ -169,13 +227,13 @@ export default function LoginScreen() {
               className={classes.btnstyle}
               fullWidth
             >
-              Sign in
+              Register
             </Button>
             <Typography className={classes.btnstyle}>
               {" "}
-              Do you have an account ? &nbsp;
-              <NextLink href={`/register?redirect=${redirect || "/"}`} passHref>
-                <Link>Sign Up</Link>
+              Already have an account ? &nbsp;
+              <NextLink href={`/login?redirect=${redirect || "/"}`} passHref>
+                <Link href="#">Sign In</Link>
               </NextLink>
             </Typography>
           </Paper>
