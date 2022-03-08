@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 
 
 
-// const adminRoutes = require('./routes/admins');
+const adminRoutes = require('./routers/adminRouter');
 
 const userRouter = require('./routers/userRouter');
 // const productRouter = require('./router/productRouter');
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/mydb";
+var url = "mongodb://localhost:27017/webShopping";
 
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
