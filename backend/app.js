@@ -24,22 +24,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-
-<<<<<<< HEAD
-// var MongoClient = require('mongodb').MongoClient;
-// var url = "mongodb://localhost:27017/nextjs-ecommerce";
-=======
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/webShopping";
->>>>>>> 305c53c (fix)
+MongoClient.connect(url, function (err, db) {
+  if (err) throw err;
+  console.log("Database created!");
+  db.close();
+});
 
-// MongoClient.connect(url, function (err, db) {
-//   if (err) throw err;
-//   console.log("Database created!");
-//   db.close();
-// });
 
 app.use(cors());
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
   extended: false
