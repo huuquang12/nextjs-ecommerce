@@ -1,47 +1,25 @@
-const express = require('express');
-const app = express();
-const mongo = require('mongodb');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const bodyParser = require('body-parser')
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import path from 'path';
+import userRouter from './routers/userRouter.js';
+// import productRouter from './routers/productRouter.js';
+// import orderRouter from './routers/orderRouter.js';
+// import uploadRouter from './routers/uploadRouter.js';
 
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/nextjs-ecommerce', {
+dotenv.config();
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/webShopping', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-
-const adminRoutes = require('./routers/adminRouter');
-
-const userRouter = require('./routers/userRouter');
-const productRouter = require('./routers/productRouter');
-// const orderRouter = require('./router/orderRouter');
-
-dotenv.config();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/webShopping";
-MongoClient.connect(url, function (err, db) {
-  if (err) throw err;
-  console.log("Database created!");
-  db.close();
-});
-
-
-app.use(cors());
-
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({
-  extended: false
-}))
-
 app.use('/api/users', userRouter);
-app.use('/api/products', productRouter);
+// app.use('/api/products', productRouter);
 // app.use('/api/orders', orderRouter);
 // app.use('/api/uploads', uploadRouter);
 
@@ -49,12 +27,14 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
 });
 
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.get('/', (req, res) => {
   res.send('Server is ready');
 });
-
 const port = process.env.PORT || 8000;
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
