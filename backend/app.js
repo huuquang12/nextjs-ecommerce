@@ -12,7 +12,7 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/nextjs-ecommerc
 });
 
 
-// const adminRoutes = require('./routes/admins');
+const adminRoutes = require('./routers/adminRouter');
 
 const userRouter = require('./routers/userRouter');
 const productRouter = require('./routers/productRouter');
@@ -25,8 +25,13 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
+<<<<<<< HEAD
 // var MongoClient = require('mongodb').MongoClient;
 // var url = "mongodb://localhost:27017/nextjs-ecommerce";
+=======
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/webShopping";
+>>>>>>> 305c53c (fix)
 
 // MongoClient.connect(url, function (err, db) {
 //   if (err) throw err;
