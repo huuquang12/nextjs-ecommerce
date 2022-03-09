@@ -37,7 +37,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LoginScreen() {
+export default function Register() {
   const {
     handleSubmit,
     control,
@@ -117,7 +117,7 @@ export default function LoginScreen() {
                   helperText={
                     errors.name
                       ? errors.name.type === "minLength"
-                        ? "Name length is more than 1"
+                        ? "Name must be at least 4 characters"
                         : "Name is required"
                       : ""
                   }

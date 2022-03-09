@@ -38,7 +38,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LoginScreen() {
+export default function Login() {
   const {
     handleSubmit,
     control,

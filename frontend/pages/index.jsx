@@ -9,11 +9,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import Layout from "../components/Layout";
 import { Store } from "../utils/Store";
+
+const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
 
 export default function Home(props) {
   const router = useRouter();
@@ -64,7 +66,7 @@ export default function Home(props) {
                   <Button
                     variant="contained"
                     size="small"
-                    color="primary"
+                    color="secondary"
                     onClick={() => addToCartHandler(product)}
                   >
                     Add to Cart

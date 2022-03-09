@@ -12,6 +12,11 @@ import {
   Menu,
   MenuItem,
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { makeStyles } from "@material-ui/core/styles";
+import Avatar from "@material-ui/core/Avatar";
 import Cookies from "js-cookie";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -37,13 +42,22 @@ const theme = createMuiTheme({
   palette: {
     type: "light",
     primary: {
-      main: "#ff3945",
+      main: "#005792",
     },
     secondary: {
-      main: "#005792",
+      main: "#ff3945",
     },
   },
 });
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: "0 4px",
+  },
+}))(Badge);
 
 export default function Layout({ title, description, children }) {
   const { state, dispatch } = useContext(Store);
@@ -87,31 +101,39 @@ export default function Layout({ title, description, children }) {
               </Link>
             </NextLink>
             <div className={classes.grow}></div>
-            <div>
+            <div className={classes.divStyle}>
               <NextLink href="/cart" passHref>
                 <Link>
                   {cart.cartItems.length > 0 ? (
-                    <Badge
-                      color="primary"
-                      badgeContent={cart.cartItems.length}
-                    >
-                      Cart
-                    </Badge>
+                    <div className={classes.divStyle}>
+                      <IconButton aria-label="cart">
+                        <StyledBadge
+                          badgeContent={cart.cartItems.length}
+                          color="secondary"
+                        >
+                          <ShoppingCartIcon />
+                        </StyledBadge>
+                      </IconButton>
+                    </div>
                   ) : (
                     "Cart"
                   )}
                 </Link>
               </NextLink>
               {userInfo ? (
-                <>
-                  <Button
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
-                    onClick={loginClickHandler}
-                    className={classes.navbarButton}
-                  >
-                    {userInfo.name}
-                  </Button>
+                <div className={classes.root}>
+                  <Avatar alt="Remy Sharp" className={classes.orange}>
+                    {" "}
+                    <Button
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={loginClickHandler}
+                      className={classes.navbarButton}
+                    >
+                      {userInfo.name}
+                    </Button>
+                  </Avatar>
+
                   <Menu
                     id="simple-menu"
                     anchorEl={anchorEl}
@@ -130,7 +152,7 @@ export default function Layout({ title, description, children }) {
                     </MenuItem>
                     <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
                   </Menu>
-                </>
+                </div>
               ) : (
                 <NextLink href="/login" passHref>
                   <Link>Login</Link>

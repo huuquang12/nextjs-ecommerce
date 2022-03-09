@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const mongo = require('mongodb');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser')
@@ -23,16 +22,6 @@ dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-
-// var MongoClient = require('mongodb').MongoClient;
-// var url = "mongodb://localhost:27017/nextjs-ecommerce";
-
-// MongoClient.connect(url, function (err, db) {
-//   if (err) throw err;
-//   console.log("Database created!");
-//   db.close();
-// });
 
 app.use(cors());
 // parse application/x-www-form-urlencoded
