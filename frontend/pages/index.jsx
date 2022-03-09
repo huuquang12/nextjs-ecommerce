@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { Store } from "../utils/Store";
 
-const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
+const Layout = dynamic(() => import('../components/Layout'), {ssr: false});
 
 export default function Home(props) {
   const router = useRouter();
