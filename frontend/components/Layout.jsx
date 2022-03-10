@@ -1,30 +1,28 @@
 import {
   AppBar,
+  Badge,
+  Button,
   Container,
   createMuiTheme,
   CssBaseline,
   Link,
+  Menu,
+  MenuItem,
   ThemeProvider,
   Toolbar,
   Typography,
-  Badge,
-  Button,
-  Menu,
-  MenuItem,
 } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import { withStyles } from "@material-ui/core/styles";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import Cookies from "js-cookie";
 import Head from "next/head";
-import React, { useState } from "react";
-import useStyles from "../utils/styles";
 import NextLink from "next/link";
-import { useContext } from "react";
 import { useRouter } from "next/router";
+import React, { useContext, useState } from "react";
 import { Store } from "../utils/Store";
+import useStyles from "../utils/styles";
 
 const theme = createMuiTheme({
   typography: {
@@ -104,20 +102,16 @@ export default function Layout({ title, description, children }) {
             <div className={classes.divStyle}>
               <NextLink href="/cart" passHref>
                 <Link>
-                  {cart.cartItems.length > 0 ? (
-                    <div className={classes.divStyle}>
-                      <IconButton aria-label="cart">
-                        <StyledBadge
-                          badgeContent={cart.cartItems.length}
-                          color="secondary"
-                        >
-                          <ShoppingCartIcon />
-                        </StyledBadge>
-                      </IconButton>
-                    </div>
-                  ) : (
-                    "Cart"
-                  )}
+                  <div className={classes.divStyle}>
+                    <IconButton aria-label="cart">
+                      <StyledBadge
+                        badgeContent={cart.cartItems.length}
+                        color="secondary"
+                      >
+                        <ShoppingCartIcon />
+                      </StyledBadge>
+                    </IconButton>
+                  </div>
                 </Link>
               </NextLink>
               {userInfo ? (

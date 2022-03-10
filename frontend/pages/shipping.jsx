@@ -19,7 +19,8 @@ import dynamic from "next/dynamic";
 
 const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
 
-export default function Shipping() {
+
+export default function Shipping(props) {
   const {
     handleSubmit,
     control,
@@ -41,21 +42,21 @@ export default function Shipping() {
     setValue("address", shippingAddress.address);
     setValue("city", shippingAddress.city);
     setValue("postalCode", shippingAddress.postalCode);
-    setValue("country", shippingAddress.country);
+    setValue("phone", shippingAddress.phone);
   }, []);
 
   const classes = useStyles();
-  const submitHandler = ({ fullName, address, city, postalCode, country }) => {
+  const submitHandler = ({ fullName, address, city, postalCode, phone }) => {
     dispatch({
       type: "SAVE_SHIPPING_ADDRESS",
-      payload: { fullName, address, city, postalCode, country },
+      payload: { fullName, address, city, postalCode, phone },
     });
     Cookies.set("shippingAddress", {
       fullName,
       address,
       city,
       postalCode,
-      country,
+      phone,
     });
     router.push("/payment");
   };
@@ -188,25 +189,26 @@ export default function Shipping() {
           </ListItem>
           <ListItem>
             <Controller
-              name="country"
+              name="phone"
               control={control}
               defaultValue=""
               rules={{
                 required: true,
-                minLength: 4,
+                pattern: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
               }}
               render={({ field }) => (
                 <TextField
                   variant="outlined"
                   fullWidth
-                  id="country"
-                  label="Country"
-                  error={Boolean(errors.country)}
+                  id="phone"
+                  type="tel"
+                  label="Phone Number"
+                  error={Boolean(errors.phone)}
                   helperText={
-                    errors.country
-                      ? errors.country.type === "minLength"
-                        ? "Country must be at least 4 characters"
-                        : "Country is required"
+                    errors.phone
+                      ? errors.phone.type === "pattern"
+                        ? "Phone number is incorrect"
+                        : "Phone is required"
                       : ""
                   }
                   {...field}

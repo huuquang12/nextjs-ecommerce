@@ -23,8 +23,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 
-const Layout = dynamic(() => import('../components/Layout'), {ssr: false});
-
+const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
 
 function Cart() {
   const router = useRouter();
