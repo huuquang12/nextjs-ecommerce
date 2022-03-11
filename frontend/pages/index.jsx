@@ -26,7 +26,13 @@ export default function Home(props) {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(
-      `http://localhost:8000/api/products/${product._id}`
+      `http://localhost:8000/api/products/${product._id}`,
+      {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'User-Agent': '*',
+        },
+      }
     );
 
     if (data.countInStock < quantity) {
