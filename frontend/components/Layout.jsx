@@ -3,7 +3,7 @@ import {
   Badge,
   Button,
   Container,
-  createMuiTheme,
+  createTheme,
   CssBaseline,
   Link,
   Menu,
@@ -24,7 +24,7 @@ import React, { useContext, useState } from "react";
 import { Store } from "../utils/Store";
 import useStyles from "../utils/styles";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     h1: {
       fontSize: "1.6rem",
