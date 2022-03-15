@@ -1,21 +1,20 @@
+import express from 'express';
+import bcrypt from 'bcryptjs';
 
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcrypt");
-const generateToken = require("../middleware/authenticate")
+import data from '../data.js'
+import User from '../models/userModel.js'
+import { generateToken, isAuth } from '../utils.js';
 
-const data = require("../data.js");
+const userRouter = express.Router();
 
-const User = require("../models/userModel");
-
-router.get('/seed',
+userRouter.get('/seed',
     async (req, res) => {
         await User.deleteMany();
         const createdUsers = await User.insertMany(data.users);
         res.send({ createdUsers });
     })
 
-router.post("/register", async (req, res) => {
+userRouter.post("/register", async (req, res) => {
     const user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -32,7 +31,7 @@ router.post("/register", async (req, res) => {
     })
 });
 
-router.post('/login', async (req, res) => {
+userRouter.post('/login', async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
         if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -49,78 +48,23 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.put("/:id", async (req, res) => {
-    const userId = req.params.id;
-    const user = await User.findById({ _id: userId });
-    if (user) {
-        user.email = req.body.email;
-        user.address = req.body.address;
-        user.phone = req.body.phone;
-        user.name = req.body.name;
-        const updateUser = await user.save();
-        res.status(201).json({
-            message: updateUser,
-        });
-    } else {
-        res.status(404).json({
-            message: "Not found",
-        });
-    }
-});
-router.get("/", async (req, res, next) => {
-    await User.find()
-        .then((users) => {
-            res.status(201).json({
-                message: users,
-            });
-        })
-        .catch((error) => {
-            res.status(500).json({
-                error: error,
-            });
-        });
-});
+userRouter.put('/profile', isAuth, async (req, res) => {
+    const user = await User.findById(req.user._id);
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.password = req.body.password
+        ? bcrypt.hashSync(req.body.password)
+        : user.password;
+    await user.save();
 
-router.get("/:id", async (req, res) => {
-    const userId = req.params.id;
-    await User.findOne({ _id: userId })
-        .then((user) => {
-            res.status(200).json({
-                message: user,
-            });
-        })
-        .catch((error) => {
-            res.status(500).json({
-                error: error,
-            });
-        });
-});
+    const token = generateToken(user);
+    res.send({
+        token,
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+    });
+})
 
-router.put("/:id/reset", async (req, res) => {
-    const resetPasswod = await User.findById(req.params.id);
-    if (resetPasswod) {
-        bcrypt.hash(req.body.password, 10, async (err, hash) => {
-            if (err) {
-                return res.status(500).json({
-                    error: "Đã có lỗi xảy ra",
-                });
-            } else {
-                resetPasswod.password = hash;
-                await resetPasswod
-                    .save()
-                    .then((resetPasswod) => {
-                        res.status(201).json({
-                            message: resetPasswod,
-                        });
-                    })
-                    .catch((error) => {
-                        res.status(500).json({
-                            error: error,
-                        });
-                    });
-            }
-        });
-    }
-});
-
-module.exports = router;
+export default userRouter;

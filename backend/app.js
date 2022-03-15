@@ -1,10 +1,11 @@
-const express = require('express');
-const app = express();
-const dotenv = require('dotenv');
-const cors = require('cors');
-const bodyParser = require('body-parser')
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-const mongoose = require('mongoose');
+const app = express();
+import cors from 'cors';
+import bodyParser from 'body-parser'; ('body-parser')
+
 mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/nextjs-ecommerce', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -13,9 +14,10 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/nextjs-ecommerc
 
 // const adminRoutes = require('./routes/admins');
 
-const userRouter = require('./routers/userRouter');
-const productRouter = require('./routers/productRouter');
-// const orderRouter = require('./router/orderRouter');
+import userRouter from './routers/userRouter.js';
+import productRouter from './routers/productRouter.js';
+import orderRouter from './routers/orderRouter.js';
+import keyRouter from './routers/keyRouter.js';
 
 dotenv.config();
 
@@ -31,7 +33,8 @@ app.use(bodyParser.urlencoded({
 
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
-// app.use('/api/orders', orderRouter);
+app.use('/api/orders', orderRouter);
+app.use('/api/keys', keyRouter);
 // app.use('/api/uploads', uploadRouter);
 
 app.use((err, req, res, next) => {

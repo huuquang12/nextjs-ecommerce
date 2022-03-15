@@ -1,22 +1,23 @@
-const express = require("express");
-const router = express.Router();
+import express from 'express';
+import data from '../data.js';
+import Product from '../models/productModel.js';
+import User from '../models/userModel.js';
+import { isAuth } from '../utils.js';
 
-const data = require("../data.js");
+const productRouter = express.Router();
 
-const Product = require("../models/productModel.js");
-
-router.get('/seed', async (req, res) => {
+productRouter.get('/seed', async (req, res) => {
     await Product.deleteMany();
     const createdProducts = await Product.insertMany(data.products);
     res.send({ createdProducts });
 })
 
-router.get('/', async (req, res) => {
+productRouter.get('/', async (req, res) => {
     const products = await Product.find();
     res.send(products);
 })
 
-router.get('/:id', async (req, res) => {
+productRouter.get('/:id', async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {
         res.send(product)
@@ -26,4 +27,5 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-module.exports = router;
+
+export default productRouter;
