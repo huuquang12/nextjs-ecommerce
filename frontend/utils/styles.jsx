@@ -58,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
   avatarStyle: {
     backgroundColor: "#005792",
   },
+  error: {
+    color: "#f04040",
+  },
 }));
 
 export default useStyles;

@@ -14,8 +14,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { Store } from "../utils/Store";
-
-const Layout = dynamic(() => import('../components/Layout'), {ssr: false});
+import Layout from "../components/Layout";
 
 export default function Home(props) {
   const router = useRouter();

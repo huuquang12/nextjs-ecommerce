@@ -62,7 +62,7 @@ function PlaceOrder() {
       const { data } = await axios.post(
         "http://localhost:8000/api/orders",
         {
-          orderOItems: cartItems,
+          orderItems: cartItems,
           shippingAddress,
           paymentMethod,
           itemsPrice,
@@ -87,7 +87,7 @@ function PlaceOrder() {
   };
 
   return (
-    <Layout title="Shopping Cart">
+    <Layout title="Place Order">
       <CheckoutStep activeStep={3} />
       <Typography component="h1" variant="h1" align="center">
         Place Order

@@ -67,6 +67,8 @@ function Order({ params }) {
     deliveredAt,
   } = order;
 
+  console.log(orderItems);
+  
   useEffect(() => {
     if (!userInfo) {
       return router.push("/login");
