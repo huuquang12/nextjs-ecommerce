@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 10,
   },
   form: {
+    width: "100%",
     maxWidth: 500,
     margin: "0 auto",
   },
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
   },
   error: {
     color: "#f04040",
+  },
+  fullWidth: {
+    width: "100%",
   },
 }));
 

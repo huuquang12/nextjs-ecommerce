@@ -19,8 +19,7 @@ import PaymentIcon from "@material-ui/icons/Payment";
 import { useSnackbar } from "notistack";
 import dynamic from "next/dynamic";
 
-const Layout = dynamic(() => import('../components/Layout'), {ssr: false});
-
+const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
 
 export default function Payment() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -71,8 +70,8 @@ export default function Payment() {
                 onChange={(e) => setPaymentMethod(e.target.value)}
               >
                 <FormControlLabel
-                  label="Credit/Debit Card"
-                  value="Credit"
+                  label="PayPal"
+                  value="PayPal"
                   control={<Radio color="primary" />}
                 ></FormControlLabel>
                 <FormControlLabel

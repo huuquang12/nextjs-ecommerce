@@ -71,8 +71,11 @@ export default function Layout({ title, description, children }) {
     setAnchorEl(e.currentTarget);
   };
 
-  const loginMenuCloseHandler = () => {
+  const loginMenuCloseHandler = (e, redirect) => {
     setAnchorEl(null);
+    if (redirect) {
+      router.push(redirect);
+    }
   };
 
   const logoutClickHandler = () => {
@@ -140,9 +143,17 @@ export default function Layout({ title, description, children }) {
                       },
                     }}
                   >
-                    <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
-                    <MenuItem onClick={loginMenuCloseHandler}>
-                      My account
+                    <MenuItem
+                      onClick={(e) => loginMenuCloseHandler(e, "/profile")}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) =>
+                        loginMenuCloseHandler(e, "/order-history")
+                      }
+                    >
+                      Order Hisotry
                     </MenuItem>
                     <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
                   </Menu>

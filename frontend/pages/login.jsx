@@ -20,6 +20,7 @@ import { Store } from "../utils/Store";
 import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
+import { getError } from "../utils/error";
 
 const useStyles = makeStyles({
   paperStyle: {
@@ -74,10 +75,7 @@ export default function Login() {
       Cookies.set("userInfo", JSON.stringify(data));
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar(
-        err.response.data ? err.response.data.message : err.message,
-        { variant: "error" }
-      );
+      enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
 

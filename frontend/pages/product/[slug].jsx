@@ -127,12 +127,4 @@ export default function ProductScreen(props) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const res = await fetch("http://localhost:8000/api/products/:slug");
-  const products = await res.json();
-  return {
-    props: {
-      products: products,
-    },
-  };
-}
+export async function getServerSideProps(context) {}

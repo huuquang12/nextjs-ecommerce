@@ -1,9 +1,14 @@
 import {
   Avatar,
-  Button, Checkbox, FormControlLabel, Grid,
-  Link, makeStyles, Paper,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Link,
+  makeStyles,
+  Paper,
   TextField,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import axios from "axios";
@@ -15,6 +20,7 @@ import { useSnackbar } from "notistack";
 import React, { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Store } from "../utils/Store";
+import { getError } from "../utils/error";
 
 const useStyles = makeStyles({
   paperStyle: {
@@ -72,10 +78,7 @@ export default function Register() {
       Cookies.set("userInfo", data);
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar(
-        err.response.data ? err.response.data.message : err.message,
-        { variant: "error" }
-      );
+      enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
 
