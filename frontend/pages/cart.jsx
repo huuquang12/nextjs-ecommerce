@@ -33,6 +33,7 @@ function Cart() {
   } = state;
 
   const updateCartHandler = async (item, quantity) => {
+    console.log(item, quantity);
     const { data } = await axios.get(
       `http://localhost:8000/api/products/${item._id}`
     );

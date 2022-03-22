@@ -25,7 +25,7 @@ import { getError } from "../utils/error";
 const useStyles = makeStyles({
   paperStyle: {
     padding: 20,
-    height: 560,
+    height: 630,
     width: 400,
     margin: "30px auto",
   },
@@ -78,7 +78,7 @@ export default function Register() {
       Cookies.set("userInfo", data);
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar(getError(err), { variant: "error" });
+      enqueueSnackbar("Email already exists", { variant: "error" });
     }
   };
 
@@ -102,7 +102,7 @@ export default function Register() {
               defaultValue=""
               rules={{
                 required: true,
-                minLength: 4,
+                minLength: 2,
               }}
               render={({ field }) => (
                 <TextField
@@ -115,7 +115,7 @@ export default function Register() {
                   helperText={
                     errors.name
                       ? errors.name.type === "minLength"
-                        ? "Name must be at least 4 characters"
+                        ? "Name must be at least 2 characters"
                         : "Name is required"
                       : ""
                   }

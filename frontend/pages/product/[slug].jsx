@@ -25,13 +25,14 @@ export default function ProductScreen(props) {
   if (!product) {
     return <div>Product Not Found</div>;
   }
-
   const classes = useStyles();
 
   const addToCartHandler = async () => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/products/${product._id}`);
+    const { data } = await axios.get(
+      `http://localhost:8000/api/products/${product._id}`
+    );
 
     if (data.countInStock < quantity) {
       window.alert("Sorry. This product is out of stock");
@@ -45,7 +46,7 @@ export default function ProductScreen(props) {
     <Layout title={product.name} description={product.description}>
       <div className={classes.section}>
         <NextLink href="/" passHref>
-          <Link color="secondary">
+          <Link>
             <Typography>Back to Home</Typography>
           </Link>
         </NextLink>
@@ -55,9 +56,10 @@ export default function ProductScreen(props) {
           <Image
             src={product.image}
             alt={product.name}
-            width={640}
-            height={640}
+            width={400}
+            height={400}
             layout="responsive"
+            priority
           />
         </Grid>
         <Grid item md={3} xs={12}>
@@ -113,7 +115,7 @@ export default function ProductScreen(props) {
                 <Button
                   fullWidth
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   onClick={addToCartHandler}
                 >
                   Add to Cart
@@ -127,4 +129,14 @@ export default function ProductScreen(props) {
   );
 }
 
-export async function getServerSideProps(context) {}
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+  const res = await fetch(`http://localhost:8000/api/products/slug/${slug}`);
+  const product = await res.json();
+  return {
+    props: {
+      product: product,
+    },
+  };
+}

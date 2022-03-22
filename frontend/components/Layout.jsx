@@ -159,9 +159,15 @@ export default function Layout({ title, description, children }) {
                   </Menu>
                 </div>
               ) : (
-                <NextLink href="/login" passHref>
-                  <Link>Login</Link>
-                </NextLink>
+                <div>
+                  <NextLink href="/login" passHref>
+                    <Link>Login</Link>
+                  </NextLink>
+                  <span style={{ marginLeft: "10px"}}>/</span>
+                  <NextLink href="/register" passHref>
+                    <Link>Register</Link>
+                  </NextLink>
+                </div>
               )}
             </div>
           </Toolbar>

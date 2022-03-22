@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import dynamic from "next/dynamic";
 import NextLink from "next/link";
+import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { Store } from "../utils/Store";
@@ -35,7 +36,6 @@ export default function Home(props) {
       return;
     }
     dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
-    router.push("/cart");
   };
 
   return (
@@ -67,8 +67,9 @@ export default function Home(props) {
                     size="small"
                     color="secondary"
                     onClick={() => addToCartHandler(product)}
+                    disabled={product.countInStock <= 0}
                   >
-                    Add to Cart
+                    {product.countInStock > 0 ? "Add to cart" : "Sold Out"}
                   </Button>
                 </CardActions>
               </Card>
