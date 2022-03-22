@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import dynamic from "next/dynamic";
-import Layout from "../components/Layout";
 import { Store } from "../utils/Store";
 import NextLink from "next/link";
 import Image from "next/image";
@@ -24,7 +23,9 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 
-function CartScreen() {
+const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
+
+function Cart() {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
@@ -104,7 +105,7 @@ function CartScreen() {
 
                           <TableCell>
                             <NextLink href={`/product/${item.slug}`} passHref>
-                              <Link color="secondary">
+                              <Link color="primary">
                                 <Typography>{item.name}</Typography>
                               </Link>
                             </NextLink>
@@ -127,7 +128,7 @@ function CartScreen() {
                           <TableCell align="right">
                             <Button
                               variant="contained"
-                              color="primary"
+                              color="secondary"
                               onClick={() => removeItemHandler(item)}
                             >
                               x
@@ -154,7 +155,7 @@ function CartScreen() {
                     <Button
                       onClick={checkoutHandler}
                       variant="contained"
-                      color="secondary"
+                      color="primary"
                       fullWidth
                     >
                       Check Out
@@ -170,4 +171,4 @@ function CartScreen() {
   );
 }
 
-export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
+export default dynamic(() => Promise.resolve(Cart), { ssr: false });

@@ -20,6 +20,7 @@ import { Store } from "../utils/Store";
 import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
+import { getError } from "../utils/error";
 
 const useStyles = makeStyles({
   paperStyle: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LoginScreen() {
+export default function Login() {
   const {
     handleSubmit,
     control,
@@ -64,7 +65,7 @@ export default function LoginScreen() {
     closeSnackbar();
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/api/users/signin",
+        "http://localhost:8000/api/users/login",
         {
           email,
           password,
@@ -74,10 +75,7 @@ export default function LoginScreen() {
       Cookies.set("userInfo", JSON.stringify(data));
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar(
-        err.response.data ? err.response.data.message : err.message,
-        { variant: "error" }
-      );
+      enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
 

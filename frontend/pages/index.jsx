@@ -22,7 +22,7 @@ export default function Home(props) {
   const { state, dispatch } = useContext(Store);
 
   const { products } = props;
-  console.log(products)
+
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
@@ -82,7 +82,6 @@ export default function Home(props) {
 
 export async function getServerSideProps(context) {
   const res = await fetch("http://localhost:8000/api/products/");
-
   const products = await res.json();
   return {
     props: {

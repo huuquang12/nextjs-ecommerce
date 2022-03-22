@@ -1,25 +1,26 @@
-import React, { useContext, useEffect } from "react";
-import NextLink from "next/link";
 import {
   Avatar,
   Button,
+  Checkbox,
+  FormControlLabel,
   Grid,
   Link,
+  makeStyles,
   Paper,
   TextField,
   Typography,
-  FormControlLabel,
-  Checkbox,
-  makeStyles,
 } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import Head from "next/head";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Store } from "../utils/Store";
+import Head from "next/head";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
+import React, { useContext, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Store } from "../utils/Store";
+import { getError } from "../utils/error";
 
 const useStyles = makeStyles({
   paperStyle: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LoginScreen() {
+export default function Register() {
   const {
     handleSubmit,
     control,
@@ -74,13 +75,10 @@ export default function LoginScreen() {
         }
       );
       dispatch({ type: "USER_LOGIN", payload: data });
-      Cookies.set("userInfo", JSON.stringify(data));
+      Cookies.set("userInfo", data);
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar(
-        err.response.data ? err.response.data.message : err.message,
-        { variant: "error" }
-      );
+      enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
 
@@ -117,7 +115,7 @@ export default function LoginScreen() {
                   helperText={
                     errors.name
                       ? errors.name.type === "minLength"
-                        ? "Name length is more than 1"
+                        ? "Name must be at least 4 characters"
                         : "Name is required"
                       : ""
                   }

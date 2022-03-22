@@ -127,3 +127,4 @@ export default function ProductScreen(props) {
   );
 }
 
+export async function getServerSideProps(context) {}

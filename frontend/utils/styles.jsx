@@ -1,6 +1,19 @@
 import { makeStyles } from "@material-ui/core";
+import { deepOrange } from "@material-ui/core/colors";
+import { createTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    marginLeft: "20px",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  orange: {
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
+  },
   navbar: {
     backgroundColor: "#1a94ff",
     "& a": {
@@ -26,6 +39,7 @@ const useStyles = makeStyles({
     marginBottom: 10,
   },
   form: {
+    width: "100%",
     maxWidth: 500,
     margin: "0 auto",
   },
@@ -34,6 +48,23 @@ const useStyles = makeStyles({
     textTransform: "initial",
     margin: "0 15px",
   },
-});
+  transparentBackgroud: {
+    backgroundColor: "transparent",
+  },
+  divStyle: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarStyle: {
+    backgroundColor: "#005792",
+  },
+  error: {
+    color: "#f04040",
+  },
+  fullWidth: {
+    width: "100%",
+  },
+}));
 
 export default useStyles;
