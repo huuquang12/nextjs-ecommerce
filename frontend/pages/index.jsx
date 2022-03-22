@@ -9,11 +9,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import Layout from "../components/Layout";
 import { Store } from "../utils/Store";
+import Layout from "../components/Layout";
 
 export default function Home(props) {
   const router = useRouter();
@@ -21,18 +22,12 @@ export default function Home(props) {
   const { state, dispatch } = useContext(Store);
 
   const { products } = props;
-
+  console.log(products)
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(
-      `http://localhost:8000/api/products/${product._id}`,
-      {
-        headers: {
-          Accept: 'application/json, text/plain, */*',
-          'User-Agent': '*',
-        },
-      }
+      `http://localhost:8000/api/products/${product._id}`
     );
 
     if (data.countInStock < quantity) {
@@ -70,7 +65,7 @@ export default function Home(props) {
                   <Button
                     variant="contained"
                     size="small"
-                    color="primary"
+                    color="secondary"
                     onClick={() => addToCartHandler(product)}
                   >
                     Add to Cart
@@ -87,6 +82,7 @@ export default function Home(props) {
 
 export async function getServerSideProps(context) {
   const res = await fetch("http://localhost:8000/api/products/");
+
   const products = await res.json();
   return {
     props: {

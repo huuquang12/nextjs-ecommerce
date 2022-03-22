@@ -64,7 +64,7 @@ export default function LoginScreen() {
     closeSnackbar();
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/api/users/login",
+        "http://localhost:8000/api/users/signin",
         {
           email,
           password,

@@ -15,8 +15,6 @@ import React, { useContext } from "react";
 import Layout from "../../components/Layout";
 import { Store } from "../../utils/Store";
 import useStyles from "../../utils/styles";
-import Product from "../../models/Product";
-import db from "../../utils/db";
 
 export default function ProductScreen(props) {
   const router = useRouter();
@@ -129,16 +127,3 @@ export default function ProductScreen(props) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { params } = context;
-  const { slug } = params;
-
-  await db.connect();
-  const product = await Product.findOne({ slug }).lean();
-  await db.disconnect();
-  return {
-    props: {
-      product: db.convertDocToObj(product),
-    },
-  };
-}

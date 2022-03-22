@@ -26,7 +26,6 @@ userRouter.post('/signin',
                     name: user.name,
                     email: user.email,
                     isAdmin: user.isAdmin,
-                    isSeller: user.isSeller,
                     token: generateToken(user),
                 });
                 return ;
@@ -42,6 +41,7 @@ userRouter.post('/register',
             name: req.body.name,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
+            isAdmin: false,
     });
         const createdUser = await user.save();
         res.send({
@@ -49,7 +49,6 @@ userRouter.post('/register',
             name: createdUser.name,
             email: createdUser.email,
             isAdmin: createdUser.isAdmin,
-            isSeller: user.isSeller,
             token: generateToken(createdUser),
         });
     })
