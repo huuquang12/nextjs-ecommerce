@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/nextjs-ecommerc
 import userRouter from './routers/userRouter.js';
 import productRouter from './routers/productRouter.js';
 import orderRouter from './routers/orderRouter.js';
-
+import paypalRouter from './routers/paypalRouter.js';
 dotenv.config();
 
 app.use(express.json());
@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/keys', paypalRouter);
 // app.use('/api/uploads', uploadRouter);
 
 app.use((err, req, res, next) => {
