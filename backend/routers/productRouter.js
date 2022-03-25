@@ -31,7 +31,7 @@ productRouter.get(
 );
 
 productRouter.get(
-  `/slug/:slug`,
+  '/slug/:slug',
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findOne({ slug: req.params.slug });
     if (product) {

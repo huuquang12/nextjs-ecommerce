@@ -8,7 +8,7 @@ import { generateToken, isAdmin, isAuth } from '../utils.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/seed', 
+userRouter.get("/seed", 
     expressAsyncHandler(async (req, res) => {
         await User.remove({});
         const createdUsers = await User.insertMany(data.users);
@@ -16,7 +16,7 @@ userRouter.get('/seed',
     })
 );
 
-userRouter.post('/login', 
+userRouter.post("/login", 
     expressAsyncHandler(async (req, res) => {
         const user = await User.findOne({ email: req.body.email });
         if (user) {
@@ -35,7 +35,7 @@ userRouter.post('/login',
     })    
 );
 
-userRouter.post('/register',
+userRouter.post("/register",
     expressAsyncHandler(async (req, res) => {
         const user = new User({
             name: req.body.name,
@@ -54,7 +54,7 @@ userRouter.post('/register',
     })
 );
 
-userRouter.get('/:id',
+userRouter.get("/:id",
     expressAsyncHandler(async (req, res) => {
         const user = await User.findById(req.params.id);
         if(user) {
@@ -66,7 +66,7 @@ userRouter.get('/:id',
     })    
 );
 
-userRouter.put('/profile', isAuth, async (req, res) => {
+userRouter.put("/profile", isAuth, async (req, res) => {
     const user = await User.findById(req.user._id);
     user.name = req.body.name;
     user.email = req.body.email;
@@ -86,7 +86,7 @@ userRouter.put('/profile', isAuth, async (req, res) => {
 })
 
 userRouter.get(
-    '/',
+    "/",
     isAuth,
     isAdmin,
     expressAsyncHandler(async (req, res) => {
@@ -96,7 +96,7 @@ userRouter.get(
 );
 
 userRouter.delete(
-    '/:id',
+    "/:id",
     isAuth,
     isAdmin,
     expressAsyncHandler(async (req, res) => {
@@ -115,7 +115,7 @@ userRouter.delete(
 );
   
 userRouter.put(
-    '/:id',
+    "/:id",
     isAuth,
     isAdmin,
     expressAsyncHandler(async (req, res) => {
