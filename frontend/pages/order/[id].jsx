@@ -368,22 +368,6 @@ function Order({ params }) {
                     )}
                   </ListItem>
                 )}
-<<<<<<< HEAD
-                {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-                  <ListItem>
-                    {loadingDeliver && <CircularProgress />}
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      onClick={deliverOrderHandler}
-                    >
-                      Deliver Order
-                    </Button>
-                  </ListItem>
-                )}
-=======
->>>>>>> 1ed7fbf0e136bc57b0b3e1818b20dbfb83ba5d29
               </List>
             </Card>
           </Grid>
