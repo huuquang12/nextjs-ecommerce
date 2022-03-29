@@ -1,26 +1,40 @@
 import {
   AppBar,
   Badge,
+  Box,
   Button,
   Container,
   createTheme,
   CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  InputBase,
   Link,
+  List,
+  ListItem,
+  ListItemText,
   Menu,
   MenuItem,
   ThemeProvider,
   Toolbar,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
 import { withStyles } from "@material-ui/core/styles";
+import ArrowForwardIosTwoToneIcon from "@material-ui/icons/ArrowForwardIosTwoTone";
+import CancelIcon from "@material-ui/icons/Cancel";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import axios from "axios";
 import Cookies from "js-cookie";
 import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext, useState } from "react";
+import { useSnackbar } from "notistack";
+import React, { useContext, useEffect, useState } from "react";
+import { getError } from "../utils/error";
 import { Store } from "../utils/Store";
 import useStyles from "../utils/styles";
 
@@ -66,12 +80,61 @@ export default function Layout({ title, description, children }) {
 
   const classes = useStyles();
 
+  const [sidbarVisible, setSidebarVisible] = useState(false);
+  const sidebarOpenHandler = () => {
+    setSidebarVisible(true);
+  };
+  const sidebarCloseHandler = () => {
+    setSidebarVisible(false);
+  };
+
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:8000/api/products/categories`
+      );
+      setCategories(data);
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: "error" });
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchBrands = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:8000/api/products/brands`
+      );
+      setBrands(data);
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: "error" });
+    }
+  };
+  useEffect(() => {
+    fetchBrands();
+  }, []);
+
+  const [query, setQuery] = useState("");
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+  const submitHandler = (e) => {
+    e.preventDefault();
+    router.push(`/search?query=${query}`);
+  };
+
   const [anchorEl, setAnchorEl] = useState(null);
   const loginClickHandler = (e) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const loginMenuCloseHandler = (e, redirect) => {
+  const loginMenuCloseHandler = (redirect) => {
     setAnchorEl(null);
     if (redirect) {
       router.push(redirect);
@@ -95,13 +158,117 @@ export default function Layout({ title, description, children }) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="static" className={classes.navbar}>
-          <Toolbar>
-            <NextLink href="/" passHref>
-              <Link>
-                <Typography className={classes.brand}>ECommerce</Typography>
-              </Link>
-            </NextLink>
-            <div className={classes.grow}></div>
+          <Toolbar className={classes.toolbar}>
+            <Box display="flex" alignItems="center">
+              <IconButton
+                edge="start"
+                aria-label="open drawer"
+                onClick={sidebarOpenHandler}
+                className={classes.menuButton}
+              >
+                <MenuIcon className={classes.navbarButton} />
+              </IconButton>
+              <NextLink href="/" passHref>
+                <Link>
+                  <Typography className={classes.brand}>E-Commerce</Typography>
+                </Link>
+              </NextLink>
+            </Box>
+            <Drawer
+              anchor="left"
+              open={sidbarVisible}
+              onClose={sidebarCloseHandler}
+            >
+              <List className={classes.list}>
+                <ListItem>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography className={classes.title}>
+                      Categories
+                    </Typography>
+                    <IconButton
+                      style={{ left: "90px" }}
+                      aria-label="close"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <CancelIcon />
+                    </IconButton>
+                  </Box>
+                </ListItem>
+                {categories.map((category) => (
+                  <NextLink
+                    key={category}
+                    href={`/search?category=${category}`}
+                    passHref
+                  >
+                    <ListItem
+                      button
+                      component="a"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <ListItemText primary={category}></ListItemText>
+                      <ArrowForwardIosTwoToneIcon />
+                    </ListItem>
+                  </NextLink>
+                ))}
+              </List>
+              <Divider light />
+              <List className={classes.list}>
+                <ListItem>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography className={classes.title}>Brands</Typography>
+                  </Box>
+                </ListItem>
+
+                {brands.map((brand) => (
+                  <NextLink
+                    key={brand}
+                    href={`/search?brand=${brand}`}
+                    passHref
+                  >
+                    <ListItem
+                      button
+                      component="a"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <ListItemText primary={brand}></ListItemText>
+                      <ArrowForwardIosTwoToneIcon />
+                    </ListItem>
+                  </NextLink>
+                ))}
+              </List>
+            </Drawer>
+
+            <div className={classes.search}>
+              <form onSubmit={submitHandler}>
+                <IconButton
+                  type="submit"
+                  className={classes.iconButton}
+                  aria-label="search"
+                >
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                </IconButton>
+                <InputBase
+                  name="query"
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ "aria-label": "search" }}
+                  onChange={queryChangeHandler}
+                />
+              </form>
+            </div>
             <div className={classes.divStyle}>
               <NextLink href="/cart" passHref>
                 <Link>
@@ -144,14 +311,23 @@ export default function Layout({ title, description, children }) {
                     }}
                   >
                     <MenuItem
-                      onClick={(e) => loginMenuCloseHandler(e, "/profile")}
+                      onClick={(e) => loginMenuCloseHandler("/profile")}
                     >
                       Profile
                     </MenuItem>
+                    {userInfo.isAdmin ? (
+                      <MenuItem
+                        onClick={(e) =>
+                          loginMenuCloseHandler("/admin/dashboard")
+                        }
+                      >
+                        Admin Dashboard
+                      </MenuItem>
+                    ) : (
+                      ""
+                    )}
                     <MenuItem
-                      onClick={(e) =>
-                        loginMenuCloseHandler(e, "/order-history")
-                      }
+                      onClick={(e) => loginMenuCloseHandler("/order-history")}
                     >
                       Order Hisotry
                     </MenuItem>
@@ -161,11 +337,15 @@ export default function Layout({ title, description, children }) {
               ) : (
                 <div>
                   <NextLink href="/login" passHref>
-                    <Link>Login</Link>
+                    <Link>
+                      <Typography component="span">Login</Typography>
+                    </Link>
                   </NextLink>
-                  <span style={{ marginLeft: "10px"}}>/</span>
+                  <span style={{ marginLeft: "10px" }}>/</span>
                   <NextLink href="/register" passHref>
-                    <Link>Register</Link>
+                    <Link>
+                      <Typography component="span">Register</Typography>
+                    </Link>
                   </NextLink>
                 </div>
               )}

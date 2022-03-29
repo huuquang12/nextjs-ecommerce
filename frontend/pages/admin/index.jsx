@@ -1,43 +1,23 @@
-import React, { useContext, useEffect } from "react";
 import {
   Avatar,
   Button,
   Grid,
-  Paper,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  Link,
   makeStyles,
+  Paper,
+  TextField
 } from "@material-ui/core";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
-import Head from "next/head";
-import NextLink from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Store } from "../../utils/Store";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { getError } from "../../utils/error";
-import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
+import React, { useContext } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { getError } from "../../utils/error";
+import { Store } from "../../utils/Store";
+import useStyles from '../../utils/styles';
 
-const useStyles = makeStyles({
-  paperStyle: {
-    padding: 20,
-    height: 410,
-    width: 400,
-    justifyContent: "center",
-    margin: "30px auto",
-  },
-  avatarStyle: { backgroundColor: "#005792" },
-  btnstyle: { margin: "12px 0" },
-  divstyle: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});
 
 export default function AdminLogin() {
   const {
