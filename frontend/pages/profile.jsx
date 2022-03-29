@@ -60,6 +60,8 @@ function Profile() {
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", data);
       enqueueSnackbar("Profile updated successfully", { variant: "success" });
+      setValue("password", "");
+      setValue("confirmPassword", "");
     } catch (err) {
       enqueueSnackbar(getError(err), { variant: "error" });
     }

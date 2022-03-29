@@ -71,7 +71,7 @@ const data = {
     {
       name: "Nike Running",
       slug: "Running",
-      category: "nike-running",
+      category: "Running",
       image: "/images/nike-running-1.jpg",
       price: 70,
       brand: "Nike",
@@ -168,4 +168,3 @@ const data = {
 };
 
 export default data;
-

@@ -170,12 +170,14 @@ productRouter.get(
   })
 );
 
-productRouter.get("/update/:id", expressAsyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (product) {
-    
-  }
-}))
+productRouter.get(
+  "/update/:id",
+  expressAsyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+    }
+  })
+);
 
 // Reviews api
 productRouter.get(
@@ -194,7 +196,7 @@ productRouter.post(
   "/:id/reviews",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const product = await Product.findOne({ slug: req.params.slug });
+    const product = await Product.findById(req.params.id);
     if (product) {
       const existReview = product.reviews.find((x) => x.user == req.user._id);
       if (existReview) {
@@ -238,6 +240,5 @@ productRouter.post(
     }
   })
 );
-
 
 export default productRouter;

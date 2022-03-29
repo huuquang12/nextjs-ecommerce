@@ -11,6 +11,9 @@ import {
   IconButton,
   InputBase,
   Link,
+  List,
+  ListItem,
+  ListItemText,
   Menu,
   MenuItem,
   ThemeProvider,
@@ -32,7 +35,6 @@ import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import React, { useContext, useEffect, useState } from "react";
 import { getError } from "../utils/error";
-
 import { Store } from "../utils/Store";
 import useStyles from "../utils/styles";
 
@@ -270,7 +272,6 @@ export default function Layout({ title, description, children }) {
             <div className={classes.divStyle}>
               <NextLink href="/cart" passHref>
                 <Link>
-
                   <div className={classes.divStyle}>
                     <IconButton aria-label="cart">
                       <StyledBadge
@@ -327,7 +328,6 @@ export default function Layout({ title, description, children }) {
                     )}
                     <MenuItem
                       onClick={(e) => loginMenuCloseHandler("/order-history")}
-
                     >
                       Order Hisotry
                     </MenuItem>

@@ -40,42 +40,6 @@ export default function Home(props) {
 
   return (
     <Layout>
-      {/* <Card>
-                <NextLink href={`/product/${product.slug}`} passHref>
-                  <CardActionArea>
-                    <CardMedia
-                      width={150}
-                      height={200}
-                      component="img"
-                      image={product.image}
-                      title={product.name}
-                    ></CardMedia>
-                    <CardContent>
-                      <Typography className={classes.text}>
-                        {product.name}
-                      </Typography>
-                    </CardContent>
-
-                    <Typography style={{ textAlign: "center" }}>
-                      ${product.price}
-                    </Typography>
-                  </CardActionArea>
-                </NextLink>
-
-                <CardActions
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    color="secondary"
-                    onClick={() => addToCartHandler(product)}
-                    disabled={product.countInStock <= 0}
-                  >
-                    {product.countInStock > 0 ? "Add to cart" : "Sold Out"}
-                  </Button>
-                </CardActions>
-              </Card> */}
       <Carousel className={classes.mt1} animation="slide">
         {featuredProducts.map((product) => (
           <NextLink
