@@ -18,8 +18,11 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { Store } from "../../utils/Store";
 import useStyles from "../../utils/styles";
+<<<<<<< HEAD
 import { useSnackbar } from "notistack";
 import { getError } from "../../utils/error";
+=======
+>>>>>>> 1ed7fbf0e136bc57b0b3e1818b20dbfb83ba5d29
 
 export default function ProductScreen(props) {
   const router = useRouter();
@@ -253,6 +256,7 @@ export default function ProductScreen(props) {
   );
 }
 
+<<<<<<< HEAD
 export async function getServerSideProps(context) {
   const { params } = context;
   const { slug } = params;
@@ -264,3 +268,6 @@ export async function getServerSideProps(context) {
     },
   };
 }
+=======
+export async function getServerSideProps(context) {}
+>>>>>>> 1ed7fbf0e136bc57b0b3e1818b20dbfb83ba5d29

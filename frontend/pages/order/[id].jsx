@@ -368,6 +368,7 @@ function Order({ params }) {
                     )}
                   </ListItem>
                 )}
+<<<<<<< HEAD
                 {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
                   <ListItem>
                     {loadingDeliver && <CircularProgress />}
@@ -381,6 +382,8 @@ function Order({ params }) {
                     </Button>
                   </ListItem>
                 )}
+=======
+>>>>>>> 1ed7fbf0e136bc57b0b3e1818b20dbfb83ba5d29
               </List>
             </Card>
           </Grid>

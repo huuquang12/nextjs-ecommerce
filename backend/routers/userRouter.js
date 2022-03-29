@@ -48,6 +48,7 @@ userRouter.post(
           token: generateToken(user),
         });
         return;
+
       }
       res.status(401).send({ message: "Password is incorrect" });
     } else {

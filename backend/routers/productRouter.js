@@ -194,7 +194,7 @@ productRouter.post(
   "/:id/reviews",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({ slug: req.params.slug });
     if (product) {
       const existReview = product.reviews.find((x) => x.user == req.user._id);
       if (existReview) {
@@ -238,5 +238,6 @@ productRouter.post(
     }
   })
 );
+
 
 export default productRouter;
