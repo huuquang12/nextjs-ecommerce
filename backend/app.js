@@ -1,3 +1,4 @@
+
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -39,6 +40,7 @@ app.use("/api/products", productRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/keys", keyRouter);
 app.use("/api/admin", adminRouter);
+
 // app.use('/api/uploads', uploadRouter);
 
 app.use((err, req, res, next) => {
@@ -47,6 +49,7 @@ app.use((err, req, res, next) => {
 
 app.get("/", (req, res) => {
   res.send("Server is ready");
+
 });
 
 const port = process.env.PORT || 8000;
