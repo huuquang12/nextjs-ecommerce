@@ -1,27 +1,18 @@
-import axios from "axios";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import NextLink from "next/link";
-import React, { useEffect, useContext, useReducer } from "react";
 import {
-  CircularProgress,
+  Button, Card, CircularProgress,
   Grid,
   List,
-  ListItem,
-  Typography,
-  Card,
-  Button,
-  ListItemText,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  ListItem, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow, Typography
 } from "@material-ui/core";
+import axios from "axios";
+import dynamic from "next/dynamic";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import React, { useContext, useEffect, useReducer } from "react";
+import Layout from "../../components/Layout";
 import { getError } from "../../utils/error";
 import { Store } from "../../utils/Store";
-import Layout from "../../components/Layout";
 import useStyles from "../../utils/styles";
 
 function reducer(state, action) {
@@ -37,7 +28,7 @@ function reducer(state, action) {
   }
 }
 
-function AdminDashboard() {
+function AdminOrders() {
   const { state } = useContext(Store);
   const router = useRouter();
   const classes = useStyles();
@@ -160,4 +151,4 @@ function AdminDashboard() {
   );
 }
 
-export default dynamic(() => Promise.resolve(AdminDashboard), { ssr: false });
+export default dynamic(() => Promise.resolve(AdminOrders), { ssr: false });

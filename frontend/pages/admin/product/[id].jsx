@@ -1,25 +1,27 @@
-import axios from "axios";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import NextLink from "next/link";
-import React, { useEffect, useContext, useReducer } from "react";
 import {
+  Button,
+  Card,
+  CircularProgress,
   Grid,
   List,
   ListItem,
-  Typography,
-  Card,
-  Button,
   ListItemText,
   TextField,
-  CircularProgress,
+  Typography,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
+import axios from "axios";
+import dynamic from "next/dynamic";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useContext, useReducer, useState } from 'react';
+import { Controller, useForm } from "react-hook-form";
+import Layout from "../../../components/Layout";
 import { getError } from "../../../utils/error";
 import { Store } from "../../../utils/Store";
-import Layout from "../../../components/Layout";
 import useStyles from "../../../utils/styles";
-import { Controller, useForm } from "react-hook-form";
-import { useSnackbar } from "notistack";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -29,6 +31,22 @@ function reducer(state, action) {
       return { ...state, loading: false, error: "" };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
+    case "UPDATE_REQUEST":
+      return { ...state, loadingUpdate: true, errorUpdate: "" };
+    case "UPDATE_SUCCESS":
+      return { ...state, loadingUpdate: false, errorUpdate: "" };
+    case "UPDATE_FAIL":
+      return { ...state, loadingUpdate: false, errorUpdate: action.payload };
+    case "UPLOAD_REQUEST":
+      return { ...state, loadingUpload: true, errorUpload: "" };
+    case "UPLOAD_SUCCESS":
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: "",
+      };
+    case "UPLOAD_FAIL":
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
@@ -37,10 +55,11 @@ function reducer(state, action) {
 function ProductEdit({ params }) {
   const productId = params.id;
   const { state } = useContext(Store);
-  const [{ loading, error }, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: "",
-  });
+  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: "",
+    });
   const {
     handleSubmit,
     control,
@@ -54,7 +73,7 @@ function ProductEdit({ params }) {
 
   useEffect(() => {
     if (!userInfo) {
-      return router.push("/login");
+      return router.push("/admin");
     } else {
       const fetchData = async () => {
         try {
@@ -70,6 +89,8 @@ function ProductEdit({ params }) {
           setValue("slug", data.slug);
           setValue("price", data.price);
           setValue("image", data.image);
+          setValue('featuredImage', data.featuredImage);
+          setIsFeatured(data.isFeatured);
           setValue("category", data.category);
           setValue("brand", data.brand);
           setValue("countInStock", data.countInStock);
@@ -81,22 +102,73 @@ function ProductEdit({ params }) {
       fetchData();
     }
   }, []);
-  const submitHandler = async ({ name }) => {
-    closeSnackbar();
-    try {
-      const { data } = await axios.put(
-        `http://localhost:8000/api/admin/products/${productId}`,
-        {
-          name,
-        },
-        { headers: { authorization: `Bearer ${userInfo.token}` } }
-      );
 
-      enqueueSnackbar("Product updated successfully", { variant: "success" });
+  const uploadHandler = async (e, imageField = 'image') => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post(
+        "http://localhost:8000/api/admin/upload",
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      setValue(imageField, data.secure_url);
+      enqueueSnackbar("File Uploaded Successfully", { variant: "success" });
     } catch (err) {
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
+
+  const submitHandler = async ({
+    name,
+    slug,
+    price,
+    category,
+    image,
+    featuredImage,
+    brand,
+    countInStock,
+    description,
+  }) => {
+    closeSnackbar();
+    try {
+      dispatch({ type: "UPDATE_REQUEST" });
+      await axios.put(
+        `http://localhost:8000/api/admin/products/${productId}`,
+        {
+          name,
+          slug,
+          price,
+          category,
+          image,
+          isFeatured,
+          featuredImage,
+          brand,
+          countInStock,
+          description,
+        },
+        { headers: { authorization: `Bearer ${userInfo.token}` } }
+      );
+      dispatch({ type: "UPDATE_SUCCESS" });
+
+      enqueueSnackbar("Product Updated Successfully", { variant: "success" });
+      router.push("/admin/products");
+    } catch (err) {
+      dispatch({ type: "UPDATE_FAIL", payload: getError(err) });
+      enqueueSnackbar(getError(err), { variant: "error" });
+    }
+  };
+  const [isFeatured, setIsFeatured] = useState(false);
+
   return (
     <Layout title={`Edit Product ${productId}`}>
       <Grid container spacing={1}>
@@ -116,6 +188,11 @@ function ProductEdit({ params }) {
               <NextLink href="/admin/products" passHref>
                 <ListItem selected button component="a">
                   <ListItemText primary="Products"></ListItemText>
+                </ListItem>
+              </NextLink>
+              <NextLink href="/admin/users" passHref>
+                <ListItem button component="a">
+                  <ListItemText primary="Users"></ListItemText>
                 </ListItem>
               </NextLink>
             </List>
@@ -226,6 +303,59 @@ function ProductEdit({ params }) {
                       ></Controller>
                     </ListItem>
                     <ListItem>
+                      <Button variant="contained" component="label">
+                        Upload File
+                        <input type="file" onChange={uploadHandler} hidden />
+                      </Button>
+                      {loadingUpload && <CircularProgress />}
+                    </ListItem>
+                    <ListItem>
+                      <FormControlLabel
+                        label="Is Featured"
+                        control={
+                          <Checkbox
+                            onClick={(e) => setIsFeatured(e.target.checked)}
+                            checked={isFeatured}
+                            name="isFeatured"
+                          />
+                        }
+                      ></FormControlLabel>
+                    </ListItem>
+                    <ListItem>
+                      <Controller
+                        name="featuredImage"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field }) => (
+                          <TextField
+                            variant="outlined"
+                            fullWidth
+                            id="featuredImage"
+                            label="Featured Image"
+                            error={Boolean(errors.image)}
+                            helperText={
+                              errors.image ? 'Featured Image is required' : ''
+                            }
+                            {...field}
+                          ></TextField>
+                        )}
+                      ></Controller>
+                    </ListItem>
+                    <ListItem>
+                      <Button variant="contained" component="label">
+                        Upload File
+                        <input
+                          type="file"
+                          onChange={(e) => uploadHandler(e, 'featuredImage')}
+                          hidden
+                        />
+                      </Button>
+                      {loadingUpload && <CircularProgress />}
+                    </ListItem>
+                    <ListItem>
                       <Controller
                         name="category"
                         control={control}
@@ -330,6 +460,7 @@ function ProductEdit({ params }) {
                       >
                         Update
                       </Button>
+                      {loadingUpdate && <CircularProgress />}
                     </ListItem>
                   </List>
                 </form>

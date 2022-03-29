@@ -22,23 +22,26 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 
 const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
 
 function Cart() {
   const router = useRouter();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
   const {
     cart: { cartItems },
   } = state;
 
   const updateCartHandler = async (item, quantity) => {
-    console.log(item, quantity);
     const { data } = await axios.get(
       `http://localhost:8000/api/products/${item._id}`
     );
     if (data.countInStock < quantity) {
-      window.alert("Sorry. This product is out of stock");
+      enqueueSnackbar("Sorry. This product is out of stock", {
+        variant: "error",
+      });
       return;
     }
     dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity } });

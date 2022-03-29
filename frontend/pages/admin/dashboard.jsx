@@ -1,24 +1,24 @@
-import axios from "axios";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import NextLink from "next/link";
-import React, { useEffect, useContext, useReducer } from "react";
 import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
   CircularProgress,
   Grid,
   List,
   ListItem,
-  Typography,
-  Card,
-  Button,
   ListItemText,
-  CardContent,
-  CardActions,
+  Typography,
 } from "@material-ui/core";
+import axios from "axios";
+import dynamic from "next/dynamic";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import React, { useContext, useEffect, useReducer } from "react";
 import { Bar } from "react-chartjs-2";
+import Layout from "../../components/Layout";
 import { getError } from "../../utils/error";
 import { Store } from "../../utils/Store";
-import Layout from "../../components/Layout";
 import useStyles from "../../utils/styles";
 
 function reducer(state, action) {
@@ -85,6 +85,11 @@ function AdminDashboard() {
               <NextLink href="/admin/products" passHref>
                 <ListItem button component="a">
                   <ListItemText primary="Products"></ListItemText>
+                </ListItem>
+              </NextLink>
+              <NextLink href="/admin/users" passHref>
+                <ListItem button component="a">
+                  <ListItemText primary="Users"></ListItemText>
                 </ListItem>
               </NextLink>
             </List>
