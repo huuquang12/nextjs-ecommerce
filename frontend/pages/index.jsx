@@ -12,7 +12,6 @@ import Carousel from "react-material-ui-carousel";
 import useStyles from "../utils/styles";
 import { useSnackbar } from "notistack";
 
-
 export default function Home(props) {
   const router = useRouter();
   const classes = useStyles();

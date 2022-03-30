@@ -76,6 +76,18 @@ function PlaceOrder() {
           },
         }
       );
+
+      await axios.post(
+        "http://localhost:8000/api/products/updated",
+        {
+          orderItems: cartItems,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
       dispatch({ type: "CART_CLEAR" });
       Cookies.remove("cartItems");
       setLoading(false);

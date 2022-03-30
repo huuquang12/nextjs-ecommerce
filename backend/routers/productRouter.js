@@ -131,7 +131,10 @@ productRouter.get("/", async (req, res) => {
   const featuredProducts = await Product.find({ isFeatured: true }, "-reviews")
     .lean()
     .limit(3);
-  const topRatedProducts = await Product.find({}, "-reviews")
+  const topRatedProducts = await Product.find(
+    { countInStock: { $gt: 0 } },
+    "-reviews"
+  )
     .lean()
     .sort({
       rating: -1,
@@ -238,6 +241,31 @@ productRouter.post(
     } else {
       res.status(404).send({ message: "Product Not Found" });
     }
+  })
+);
+
+productRouter.post(
+  "/updated",
+  expressAsyncHandler(async (req, res) => {
+    req.body.orderItems.forEach(async (item) => {
+      const product = await Product.findByIdAndUpdate(item._id, {
+        countInStock: item.countInStock - item.quantity,
+        function(err, docs) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Updated product : ", docs);
+          }
+        },
+      });
+      if (product) {
+        res.status(201).send({
+          message: "Product updated",
+        });
+      } else {
+        res.status(404).send({ message: "Product Not Found" });
+      }
+    });
   })
 );
 

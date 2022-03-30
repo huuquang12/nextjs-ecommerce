@@ -45,8 +45,9 @@ export default function ProductItem({ product, addToCartHandler }) {
           size="small"
           color="secondary"
           onClick={() => addToCartHandler(product)}
+          disabled={product.countInStock <= 0}
         >
-          Add to cart
+          {product.countInStock > 0 ? "Add to cart" : "Sold Out"}
         </Button>
       </CardActions>
     </Card>

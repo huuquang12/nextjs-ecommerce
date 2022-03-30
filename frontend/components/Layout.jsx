@@ -269,7 +269,7 @@ export default function Layout({ title, description, children }) {
                 />
               </form>
             </div>
-            <div className={classes.divStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
               <NextLink href="/cart" passHref>
                 <Link>
                   <div className={classes.divStyle}>

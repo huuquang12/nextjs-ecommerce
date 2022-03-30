@@ -38,7 +38,7 @@ export default function ProductScreen(props) {
     try {
       await axios.post(
         `http://localhost:8000/api/products/${product._id}/reviews`,
-        { 
+        {
           rating,
           comment,
         },
@@ -85,7 +85,9 @@ export default function ProductScreen(props) {
     );
 
     if (data.countInStock < quantity) {
-      window.alert("Sorry. This product is out of stock");
+      enqueueSnackbar("Sorry. This product is out of stock", {
+        variant: "error",
+      });
       return;
     }
     dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
@@ -168,8 +170,9 @@ export default function ProductScreen(props) {
                   variant="contained"
                   color="secondary"
                   onClick={addToCartHandler}
+                  disabled={product.countInStock <= 0}
                 >
-                  Add to Cart
+                  {product.countInStock > 0 ? "Add to cart" : "Sold Out"}
                 </Button>
               </ListItem>
             </List>
