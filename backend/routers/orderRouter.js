@@ -3,6 +3,7 @@ import Order from "../models/orderModel.js";
 import { isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
+import Cart from "../models/cartModel.js";
 
 const orderRouter = express.Router();
 

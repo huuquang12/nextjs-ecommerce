@@ -26,6 +26,7 @@ export default function Shipping(props) {
     control,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm();
 
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function Shipping(props) {
     userInfo,
     cart: { shippingAddress },
   } = state;
+  const { location } = shippingAddress;
   useEffect(() => {
     if (!userInfo) {
       router.push("/login?redirect=/shipping");
@@ -49,7 +51,7 @@ export default function Shipping(props) {
   const submitHandler = ({ fullName, address, city, postalCode, phone }) => {
     dispatch({
       type: "SAVE_SHIPPING_ADDRESS",
-      payload: { fullName, address, city, postalCode, phone },
+      payload: { fullName, address, city, postalCode, phone, location },
     });
     Cookies.set("shippingAddress", {
       fullName,
@@ -57,8 +59,30 @@ export default function Shipping(props) {
       city,
       postalCode,
       phone,
+      location,
     });
     router.push("/payment");
+  };
+
+  const chooseLocationHandler = () => {
+    const fullName = getValues('fullName');
+    const address = getValues('address');
+    const city = getValues('city');
+    const postalCode = getValues('postalCode');
+    const phone = getValues('phone');
+    dispatch({
+      type: 'SAVE_SHIPPING_ADDRESS',
+      payload: { fullName, address, city, postalCode, phone },
+    });
+    Cookies.set('shippingAddress', {
+      fullName,
+      address,
+      city,
+      postalCode,
+      phone,
+      location,
+    });
+    router.push('/map');
   };
 
   return (
@@ -215,6 +239,18 @@ export default function Shipping(props) {
                 ></TextField>
               )}
             ></Controller>
+          </ListItem>
+          <ListItem>
+            <Button
+              variant="contained"
+              type="button"
+              onClick={chooseLocationHandler}
+            >
+              Choose on map
+            </Button>
+            <Typography>
+              {location.lat && `${location.lat}, ${location.lat}`}
+            </Typography>
           </ListItem>
           <ListItem>
             <Button variant="contained" type="submit" fullWidth color="primary">

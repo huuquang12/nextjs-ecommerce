@@ -16,6 +16,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/styles": "^4.11.4",
     "@paypal/react-paypal-js": "^7.6.0",
+    "@react-google-maps/api": "^2.2.0",
     "axios": "^0.26.0",
     "chart.js": "^3.4.1",
     "js-cookie": "^2.2.1",

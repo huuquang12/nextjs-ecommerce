@@ -18,23 +18,34 @@ export default function Home(props) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
 
-  const { topRatedProducts, featuredProducts } = props;
+  const { topRatedProducts, featuredProducts, lastestProducts } = props;
   const { userInfo } = state;
 
   const addToCartHandler = async (product) => {
-    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
-    const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(
-      `http://localhost:8000/api/products/${product._id}`
-    );
+    if (!userInfo) {
+      const existItem = state.cart.cartItems.find(
+        (x) => x.productId === product._id
+      );
+      const quantity = existItem ? existItem.quantity + 1 : 1;
+      const { data } = await axios.get(
+        `http://localhost:8000/api/products/${product._id}`
+      );
 
-    if (data.countInStock < quantity) {
-      enqueueSnackbar("Sorry. This product is out of stock", {
-        variant: "error",
-      });
-      return;
+      if (data.countInStock < quantity) {
+        enqueueSnackbar("Sorry. This product is out of stock", {
+          variant: "error",
+        });
+        return;
+      }
+      dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    } else {
+      const { data } = await axios.post(
+        `http://localhost:8000/api/carts/add/${product._id}`,
+        { userInfo }
+      );
+      Cookies.set("cartItems", data.cartItems);
+      router.reload("/");
     }
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
   };
 
   return (
@@ -58,7 +69,22 @@ export default function Home(props) {
           </NextLink>
         ))}
       </Carousel>
-      <Typography variant="h2">Popular Products</Typography>
+      <Typography variant="h2" className={classes.pdt}>
+        Lastest Products
+      </Typography>
+      <Grid container spacing={3}>
+        {lastestProducts.map((product) => (
+          <Grid item md={4} key={product.name}>
+            <ProductItem
+              product={product}
+              addToCartHandler={addToCartHandler}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      <Typography variant="h2" className={classes.pdt}>
+        Popular Products
+      </Typography>
       <Grid container spacing={3}>
         {topRatedProducts.map((product) => (
           <Grid item md={4} key={product.name}>
@@ -80,6 +106,7 @@ export async function getServerSideProps(context) {
     props: {
       featuredProducts: data.featuredProducts,
       topRatedProducts: data.topRatedProducts,
+      lastestProducts: data.lastestProducts,
     },
   };
 }

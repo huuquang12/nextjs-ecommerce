@@ -8,6 +8,7 @@ import {
   Typography,
   TextField,
   CircularProgress,
+  Box
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import axios from "axios";
@@ -21,6 +22,19 @@ import useStyles from "../../utils/styles";
 import { useSnackbar } from "notistack";
 import { getError } from "../../utils/error";
 
+const labels = {
+  0.5: "Useless",
+  1: "Useless+",
+  1.5: "Poor",
+  2: "Poor+",
+  2.5: "Ok",
+  3: "Ok+",
+  3.5: "Good",
+  4: "Good+",
+  4.5: "Excellent",
+  5: "Excellent+",
+};
+
 export default function ProductScreen(props) {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
@@ -28,7 +42,8 @@ export default function ProductScreen(props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [reviews, setReviews] = useState([]);
-  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(-1);
+  const [rating, setRating] = useState(2);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -128,7 +143,7 @@ export default function ProductScreen(props) {
               <Typography>Brand: {product.brand}</Typography>
             </ListItem>
             <ListItem>
-              <Rating value={product.rating} readOnly></Rating>
+              <Rating value={product.rating} readOnly precision={0.5}></Rating>
               <Link href="#reviews">
                 <Typography>({product.numReviews} reviews)</Typography>
               </Link>
@@ -224,8 +239,17 @@ export default function ProductScreen(props) {
                   <Rating
                     name="simple-controlled"
                     value={rating}
-                    onChange={(e) => setRating(e.target.value)}
+                    precision={0.5}
+                    onChange={(event, newValue) => {
+                      setRating(newValue);
+                    }}
+                    onChangeActive={(event, newHover) => {
+                      setHover(newHover);
+                    }}
                   />
+                  {rating !== null && (
+                    <Box ml={2}>{labels[hover !== -1 ? hover : rating]}</Box>
+                  )}
                 </ListItem>
                 <ListItem>
                   <Button

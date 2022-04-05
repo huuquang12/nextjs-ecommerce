@@ -140,9 +140,17 @@ productRouter.get("/", async (req, res) => {
       rating: -1,
     })
     .limit(3);
+  const lastestProducts = await Product.find({}, "-reviews")
+    .lean()
+    .sort({
+      createdAt: -1,
+    })
+    .limit(3);
+
   res.send({
     featuredProducts,
     topRatedProducts,
+    lastestProducts,
   });
 });
 
@@ -248,20 +256,13 @@ productRouter.post(
   "/updated",
   expressAsyncHandler(async (req, res) => {
     req.body.orderItems.forEach(async (item) => {
-      const product = await Product.findByIdAndUpdate(item._id, {
+      const product = await Product.findByIdAndUpdate(item.productId, {
         countInStock: item.countInStock - item.quantity,
-        function(err, docs) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Updated product : ", docs);
-          }
-        },
       });
       if (product) {
         res.status(201).send({
           message: "Product updated",
-        });
+        }); 
       } else {
         res.status(404).send({ message: "Product Not Found" });
       }

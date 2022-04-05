@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Store } from "../utils/Store";
 import NextLink from "next/link";
@@ -23,20 +23,34 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
+import Layout from "../components/Layout";
 
-const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
-
-function Cart() {
+function Cart(props) {
   const router = useRouter();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
   const {
+    userInfo,
     cart: { cartItems },
   } = state;
 
+  const fetchCartItems = async () => {
+    try {
+      const { data } = await axios.post(`http://localhost:8000/api/carts/`, {
+        userInfo,
+      });
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: "error" });
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
   const updateCartHandler = async (item, quantity) => {
     const { data } = await axios.get(
-      `http://localhost:8000/api/products/${item._id}`
+      `http://localhost:8000/api/products/${item.productId}`
     );
     if (data.countInStock < quantity) {
       enqueueSnackbar("Sorry. This product is out of stock", {
@@ -128,7 +142,9 @@ function Cart() {
                               ))}
                             </Select>
                           </TableCell>
-                          <TableCell align="right">${item.price}</TableCell>
+                          <TableCell align="right">
+                            ${item.price * item.quantity}
+                          </TableCell>
                           <TableCell align="right">
                             <Button
                               variant="contained"

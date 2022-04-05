@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
   transparentBackgroud: {
     backgroundColor: "transparent",
   },
+
   title: {
     fontSize: "18px",
     fontWeight: "700",
@@ -74,6 +75,10 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "24px",
     fontWeight: "400",
   },
+  pdt: {
+    paddingTop: "26px",
+  },
+
   // custom styles
   divStyle: {
     display: "flex",
@@ -168,6 +173,21 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "0 5px 5px 0",
     "& span": {
       color: "#ffffff",
+    },
+  },
+
+  // Map
+  fullContainer: { height: "100vh" },
+  mapInputBox: {
+    position: "absolute",
+    display: "flex",
+    left: 0,
+    right: 0,
+    margin: "10px auto",
+    width: 300,
+    height: 40,
+    "& input": {
+      width: 250,
     },
   },
 }));

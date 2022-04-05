@@ -32,7 +32,7 @@ export default function ProductItem({ product, addToCartHandler }) {
               {product.category}
             </Typography>
             <div style={{ display: "flex", justifyContent: "flex-start" }}>
-              <Rating value={product.rating} readOnly></Rating>
+              <Rating value={product.rating} readOnly precision={0.5}></Rating>
               <span style={{ lineHeight: "24px", margin: "0 5px" }}>|</span>
               <Typography>{product.numReviews} reviews</Typography>
             </div>

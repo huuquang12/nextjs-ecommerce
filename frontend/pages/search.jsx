@@ -166,7 +166,7 @@ export default function Search(props) {
                   <MenuItem value="all">All</MenuItem>
                   {ratings.map((rating) => (
                     <MenuItem dispaly="flex" key={rating} value={rating}>
-                      <Rating value={rating} readOnly />
+                      <Rating value={rating} readOnly precision={0.5} />
                       <Typography component="span">&amp; Up</Typography>
                     </MenuItem>
                   ))}
@@ -218,7 +218,11 @@ export default function Search(props) {
             ))}
           </Grid>
           <Pagination
-            style={{ display: "flex", justifyContent: "center", marginRight: "310px" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginRight: "310px",
+            }}
             variant="outlined"
             shape="rounded"
             className={classes.mt1}

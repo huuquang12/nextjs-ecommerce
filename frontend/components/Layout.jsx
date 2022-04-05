@@ -18,7 +18,7 @@ import {
   MenuItem,
   ThemeProvider,
   Toolbar,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import { withStyles } from "@material-ui/core/styles";
@@ -77,6 +77,27 @@ export default function Layout({ title, description, children }) {
   const router = useRouter();
 
   const { cart, userInfo } = state;
+
+  const [cartNumber, setCartNumber] = useState(0);
+  const fetchCartItems = async () => {
+    try {
+      const { data } = await axios.post(`http://localhost:8000/api/carts`, {
+        userInfo,
+      });
+      if (userInfo) {
+        cart.cartItems = data.cartItems;
+        setCartNumber(cart.cartItems.length);
+      } else {
+        setCartNumber(cart.cartItems.length);
+      }
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: "error" });
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, [cartNumber]);
 
   const classes = useStyles();
 
@@ -146,7 +167,7 @@ export default function Layout({ title, description, children }) {
     dispatch({ type: "USER_LOGOUT" });
     Cookies.remove("userInfo");
     Cookies.remove("cartItems");
-    router.push("/");
+    router.reload("/");
   };
 
   return (
@@ -269,15 +290,18 @@ export default function Layout({ title, description, children }) {
                 />
               </form>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <NextLink href="/cart" passHref>
                 <Link>
                   <div className={classes.divStyle}>
                     <IconButton aria-label="cart">
-                      <StyledBadge
-                        badgeContent={cart.cartItems.length}
-                        color="secondary"
-                      >
+                      <StyledBadge badgeContent={cartNumber} color="secondary">
                         <ShoppingCartIcon />
                       </StyledBadge>
                     </IconButton>

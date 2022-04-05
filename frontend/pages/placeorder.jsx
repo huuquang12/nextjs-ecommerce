@@ -36,7 +36,7 @@ function PlaceOrder() {
     userInfo,
     cart: { cartItems, shippingAddress, paymentMethod },
   } = state;
-  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.456 => 123.46
+  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   const itemsPrice = round2(
     cartItems.reduce((a, c) => a + c.price * c.quantity, 0)
   );
@@ -55,6 +55,7 @@ function PlaceOrder() {
 
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+
   const placeOrderHandler = async () => {
     closeSnackbar();
     try {
@@ -88,6 +89,11 @@ function PlaceOrder() {
           },
         }
       );
+      await axios.delete(`http://localhost:8000/api/carts/${userInfo._id}`, {
+        headers: {
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
       dispatch({ type: "CART_CLEAR" });
       Cookies.remove("cartItems");
       setLoading(false);
@@ -179,7 +185,7 @@ function PlaceOrder() {
                             </NextLink>
                           </TableCell>
                           <TableCell align="right">
-                            <Typography>{item.quantity}</Typography>
+                            <Typography>{item.qty}</Typography>
                           </TableCell>
                           <TableCell align="right">
                             <Typography color="secondary">

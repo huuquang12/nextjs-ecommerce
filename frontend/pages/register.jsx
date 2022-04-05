@@ -206,17 +206,6 @@ export default function Register() {
                 />
               )}
             ></Controller>
-            <div className={classes.divstyle}>
-              <FormControlLabel
-                control={<Checkbox name="checkedB" color="primary" />}
-                label="Remember me"
-              />
-              <Typography>
-                <NextLink href="">
-                  <Link href="#">Forgot password ?</Link>
-                </NextLink>
-              </Typography>
-            </div>
 
             <Button
               type="submit"
