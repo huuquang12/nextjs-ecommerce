@@ -4,7 +4,7 @@ import {
   Typography,
   TextField,
   Button,
-  Avatar,
+  Avatar,Modal
 } from "@material-ui/core";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
@@ -16,6 +16,24 @@ import { Controller, useForm } from "react-hook-form";
 import CheckoutStep from "../components/CheckoutStep";
 import LocalShippingIcon from "@material-ui/icons/LocalShipping";
 import dynamic from "next/dynamic";
+import { makeStyles } from '@material-ui/core/styles';
+import GoogleMap from '../components/GoogleMap';
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
 
 const Layout = dynamic(() => import("../components/Layout"), { ssr: false });
 
@@ -26,8 +44,20 @@ export default function Shipping(props) {
     control,
     formState: { errors },
     setValue,
-    getValues,
   } = useForm();
+
+  // getModalStyle is not a pure function, we roll the style only on the first render
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
@@ -35,14 +65,13 @@ export default function Shipping(props) {
     userInfo,
     cart: { shippingAddress },
   } = state;
-  const { location } = shippingAddress;
   useEffect(() => {
     if (!userInfo) {
       router.push("/login?redirect=/shipping");
     }
     setValue("fullName", shippingAddress.fullName);
     setValue("address", shippingAddress.address);
-    setValue("city", shippingAddress.city);
+    setValue("city", shippingAddress.city); 
     setValue("postalCode", shippingAddress.postalCode);
     setValue("phone", shippingAddress.phone);
   }, []);
@@ -51,7 +80,7 @@ export default function Shipping(props) {
   const submitHandler = ({ fullName, address, city, postalCode, phone }) => {
     dispatch({
       type: "SAVE_SHIPPING_ADDRESS",
-      payload: { fullName, address, city, postalCode, phone, location },
+      payload: { fullName, address, city, postalCode, phone },
     });
     Cookies.set("shippingAddress", {
       fullName,
@@ -59,35 +88,24 @@ export default function Shipping(props) {
       city,
       postalCode,
       phone,
-      location,
     });
     router.push("/payment");
-  };
-
-  const chooseLocationHandler = () => {
-    const fullName = getValues('fullName');
-    const address = getValues('address');
-    const city = getValues('city');
-    const postalCode = getValues('postalCode');
-    const phone = getValues('phone');
-    dispatch({
-      type: 'SAVE_SHIPPING_ADDRESS',
-      payload: { fullName, address, city, postalCode, phone },
-    });
-    Cookies.set('shippingAddress', {
-      fullName,
-      address,
-      city,
-      postalCode,
-      phone,
-      location,
-    });
-    router.push('/map');
   };
 
   return (
     <Layout title="Shipping Address">
       <CheckoutStep activeStep={1} />
+      
+      <Modal style={{display:"flex",alignItems:"center", justifyContent:"center"}}
+        open={open}
+        onClose={handleClose}
+        // aria-labelledby="simple-modal-title"
+        // aria-describedby="simple-modal-description"
+      >  
+        <div style={{margin:"auto", width:"600px",  height:"600px"}}><GoogleMap></GoogleMap></div>
+      </Modal>
+
+
       <form onSubmit={handleSubmit(submitHandler)} className={classes.form}>
         <div className={classes.divStyle}>
           <Avatar className={classes.avatarStyle}>
@@ -138,6 +156,9 @@ export default function Shipping(props) {
               }}
               render={({ field }) => (
                 <TextField
+                onClick={()=> 
+                  handleOpen()
+                }
                   variant="outlined"
                   fullWidth
                   id="address"
@@ -155,6 +176,7 @@ export default function Shipping(props) {
               )}
             ></Controller>
           </ListItem>
+  
           <ListItem>
             <Controller
               name="city"
@@ -239,18 +261,6 @@ export default function Shipping(props) {
                 ></TextField>
               )}
             ></Controller>
-          </ListItem>
-          <ListItem>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={chooseLocationHandler}
-            >
-              Choose on map
-            </Button>
-            <Typography>
-              {location.lat && `${location.lat}, ${location.lat}`}
-            </Typography>
           </ListItem>
           <ListItem>
             <Button variant="contained" type="submit" fullWidth color="primary">
