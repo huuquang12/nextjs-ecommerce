@@ -7,31 +7,40 @@ import User from "../models/userModel.js";
 
 const cartRouter = express.Router();
 
-cartRouter.post(
-  "/",
+cartRouter.get(
+  "/:id",
   expressAsyncHandler(async (req, res) => {
-    try {
-      // find the cart, whether in session or in db based on the user state
-      let cart_user;
-      if (req.body.userInfo) {
-        cart_user = await Cart.findOne({ user: req.body.userInfo._id });
-      }
-      // if user is signed in and has cart, load user's cart from the db
-      if (req.body.userInfo && cart_user) {
-        req.session.cart = cart_user;
-        return res.send(cart_user);
-      }
-      // if there is no cart in session and user is not logged in, cart is empty
-      if (!req.session.cart) {
-        return res.send({ cartItems: [] });
-      }
-      // otherwise, load the session's cart
-      return res.send({
-        cart: req.session.cart,
+    const cart = await Cart.findOneAndRemove({ user: req.params.id });
+  })
+);
+
+cartRouter.get(
+  "/user/:id",
+  expressAsyncHandler(async (req, res) => {
+    const userId = req.params.id;
+    let cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      cart = new Cart({ user: userId });
+    }
+    res.send(cart);
+  })
+);
+
+cartRouter.post(
+  "/save",
+  expressAsyncHandler(async (req, res) => {
+    const existCart = await Cart.find({ user: req.body.user._id });
+    if (existCart.length <= 0) {
+      const cart = new Cart({ user: req.body.user._id });
+      cart.cartItem = req.body.cartItems.map((item) => {
+        const productId = item._id;
+        cart.cartItems.push({
+          ...item,
+          productId: productId,
+        });
       });
-    } catch (err) {
-      console.log(err.message);
-      res.send({ message: err.message });
+      cart.save();
+      res.send(cart);
     }
   })
 );
@@ -47,12 +56,7 @@ cartRouter.post(
         user_cart = await Cart.findOne({ user: req.body.userInfo._id });
       }
       let cart;
-      if (
-        (req.body.userInfo && !user_cart && req.session.cart) ||
-        (!req.body.userInfo && req.session.cart)
-      ) {
-        cart = await new Cart(req.session.cart);
-      } else if (!req.body.userInfo || !user_cart) {
+      if (!req.body.userInfo || !user_cart) {
         cart = new Cart({});
       } else {
         cart = user_cart;
@@ -90,26 +94,46 @@ cartRouter.post(
         cart.user = req.body.userInfo._id;
         await cart.save();
       }
-      req.session.cart = cart;
       res.send(cart);
     } catch (err) {
-      res.send({ message: err.message });
+      console.log({ message: err.message });
     }
   })
 );
 
-cartRouter.delete(
-  "/:id",
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const cart = await Cart.deleteOne({ user: req.params.id });
-    console.log(cart);
-    if (cart.deletedCount == 1) {
-      res.send({ message: "Cart Deleted" });
-    } else {
-      res.status(404).send({ message: "Cart Not Found" });
+cartRouter.post("/update/item/:id", async (req, res) => {
+  const productId = req.params.id;
+  let cart;
+  try {
+    cart = await Cart.findOne({ user: req.body.userInfo._id });
+    let itemIndex = cart.cartItems.findIndex((p) => p.productId == productId);
+    if (itemIndex > -1) {
+      cart.cartItems[itemIndex].quantity = req.body.quantity;
     }
-  })
-);
+    await cart.save();
+    res.send(cart);
+  } catch (err) {
+    res.send({ message: "Cart Not Found" });
+  }
+});
+
+cartRouter.post("/delete/item/:id", async (req, res) => {
+  const productId = req.params.id;
+  let cart;
+  try {
+    cart = await Cart.findOne({ user: req.body.userInfo._id });
+
+    //find the item with productId
+    let itemIndex = cart.cartItems.findIndex((p) => p.productId == productId);
+    if (itemIndex > -1) {
+      await cart.cartItems.remove({ _id: cart.cartItems[itemIndex]._id });
+    }
+    await cart.save();
+
+    res.send(cart);
+  } catch (err) {
+    res.send({ message: "Cart Not Found" });
+  }
+});
 
 export default cartRouter;

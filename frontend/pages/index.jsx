@@ -4,13 +4,14 @@ import dynamic from "next/dynamic";
 import NextLink from "next/link";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Store } from "../utils/Store";
 import Layout from "../components/Layout";
 import ProductItem from "../components/ProductItem";
 import Carousel from "react-material-ui-carousel";
 import useStyles from "../utils/styles";
 import { useSnackbar } from "notistack";
+import { getError } from "../utils/error";
 
 export default function Home(props) {
   const router = useRouter();
@@ -19,7 +20,27 @@ export default function Home(props) {
   const { state, dispatch } = useContext(Store);
 
   const { topRatedProducts, featuredProducts, lastestProducts } = props;
-  const { userInfo } = state;
+  const {
+    userInfo,
+    cart: { cartItems },
+  } = state;
+
+  // const fetchCartItems = async () => {
+  //   try {
+  //     if (userInfo) {
+  //       const { data } = await axios.get(
+  //         `http://localhost:8000/api/carts/user/${userInfo._id}`
+  //       );
+  //       console.log(data);
+  //     }
+  //   } catch (err) {
+  //     enqueueSnackbar(getError(err), { variant: "error" });
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchCartItems();
+  // }, []);
 
   const addToCartHandler = async (product) => {
     if (!userInfo) {
@@ -30,21 +51,19 @@ export default function Home(props) {
       const { data } = await axios.get(
         `http://localhost:8000/api/products/${product._id}`
       );
-
       if (data.countInStock < quantity) {
         enqueueSnackbar("Sorry. This product is out of stock", {
           variant: "error",
         });
         return;
       }
-      dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+      dispatch({ type: "CART_ADD_ITEM", payload: { ...data, quantity } });
     } else {
       const { data } = await axios.post(
         `http://localhost:8000/api/carts/add/${product._id}`,
         { userInfo }
       );
-      Cookies.set("cartItems", data.cartItems);
-      router.reload("/");
+      dispatch({ type: "CART_UPDATE", payload: data.cartItems });
     }
   };
 

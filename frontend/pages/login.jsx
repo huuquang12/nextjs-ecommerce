@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import {
   Avatar,
@@ -52,8 +52,12 @@ export default function Login() {
 
   const router = useRouter();
   const { redirect } = router.query;
+  console.log(redirect);
   const { state, dispatch } = useContext(Store);
-  const { userInfo } = state;
+  const {
+    userInfo,
+    cart: { cartItems },
+  } = state;
 
   useEffect(() => {
     if (userInfo) {
@@ -73,6 +77,23 @@ export default function Login() {
       );
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", JSON.stringify(data));
+      const user = data;
+      console.log("log in");
+      const cart = await axios.get(
+        `http://localhost:8000/api/carts/user/${data._id}`
+      );
+      dispatch({ type: "CART_UPDATE", payload: cart.data.cartItems });
+      console.log("get cart");
+
+      const saveCart = await axios.post(
+        `http://localhost:8000/api/carts/save`,
+        {
+          cartItems,
+          user,
+        }
+      );
+      console.log(saveCart);
+      // dispatch({ type: "CART_UPDATE", payload: saveCart.data.cartItems });
       router.push(redirect || "/");
     } catch (err) {
       enqueueSnackbar(getError(err), { variant: "error" });

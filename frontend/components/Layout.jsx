@@ -29,6 +29,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import axios from "axios";
 import Cookies from "js-cookie";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -71,33 +72,12 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 
-export default function Layout({ title, description, children }) {
+function Layout({ title, description, children }) {
   const { state, dispatch } = useContext(Store);
 
   const router = useRouter();
 
   const { cart, userInfo } = state;
-
-  const [cartNumber, setCartNumber] = useState(0);
-  const fetchCartItems = async () => {
-    try {
-      const { data } = await axios.post(`http://localhost:8000/api/carts`, {
-        userInfo,
-      });
-      if (userInfo) {
-        cart.cartItems = data.cartItems;
-        setCartNumber(cart.cartItems.length);
-      } else {
-        setCartNumber(cart.cartItems.length);
-      }
-    } catch (err) {
-      enqueueSnackbar(getError(err), { variant: "error" });
-    }
-  };
-
-  useEffect(() => {
-    fetchCartItems();
-  }, [cartNumber]);
 
   const classes = useStyles();
 
@@ -167,7 +147,7 @@ export default function Layout({ title, description, children }) {
     dispatch({ type: "USER_LOGOUT" });
     Cookies.remove("userInfo");
     Cookies.remove("cartItems");
-    router.reload("/");
+    router.push("/");
   };
 
   return (
@@ -301,7 +281,10 @@ export default function Layout({ title, description, children }) {
                 <Link>
                   <div className={classes.divStyle}>
                     <IconButton aria-label="cart">
-                      <StyledBadge badgeContent={cartNumber} color="secondary">
+                      <StyledBadge
+                        badgeContent={cart.cartItems.length}
+                        color="secondary"
+                      >
                         <ShoppingCartIcon />
                       </StyledBadge>
                     </IconButton>
@@ -310,7 +293,7 @@ export default function Layout({ title, description, children }) {
               </NextLink>
               {userInfo ? (
                 <div className={classes.root}>
-                  <Avatar alt="Remy Sharp" className={classes.orange}>
+                  <Avatar alt="Avatar" className={classes.orange}>
                     {" "}
                     <Button
                       aria-controls="simple-menu"
@@ -384,3 +367,5 @@ export default function Layout({ title, description, children }) {
     </div>
   );
 }
+
+export default dynamic(() => Promise.resolve(Layout), { ssr: false });

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Store } from "../utils/Store";
 import NextLink from "next/link";
@@ -34,35 +34,38 @@ function Cart(props) {
     cart: { cartItems },
   } = state;
 
-  const fetchCartItems = async () => {
-    try {
-      const { data } = await axios.post(`http://localhost:8000/api/carts/`, {
-        userInfo,
-      });
-    } catch (err) {
-      enqueueSnackbar(getError(err), { variant: "error" });
-    }
-  };
-
-  useEffect(() => {
-    fetchCartItems();
-  }, []);
-
   const updateCartHandler = async (item, quantity) => {
-    const { data } = await axios.get(
-      `http://localhost:8000/api/products/${item.productId}`
-    );
-    if (data.countInStock < quantity) {
-      enqueueSnackbar("Sorry. This product is out of stock", {
-        variant: "error",
-      });
-      return;
+    if (!userInfo) {
+      const { data } = await axios.get(
+        `http://localhost:8000/api/products/${item._id}`
+      );
+      if (data.countInStock < quantity) {
+        enqueueSnackbar("Sorry. This product is out of stock", {
+          variant: "error",
+        });
+        return;
+      }
+      dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity } });
+    } else {
+      const { data } = await axios.post(
+        `http://localhost:8000/api/carts/update/item/${item.productId}`,
+        { userInfo, quantity }
+      );
+      console.log("update");
+      dispatch({ type: "CART_UPDATE", payload: data.cartItems });
     }
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity } });
   };
 
-  const removeItemHandler = (item) => {
-    dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+  const removeItemHandler = async (item) => {
+    if (userInfo) {
+      const { data } = await axios.post(
+        `http://localhost:8000/api/carts/delete/item/${item.productId}`,
+        { userInfo }
+      );
+      dispatch({ type: "CART_UPDATE", payload: data.cartItems });
+    } else {
+      dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+    }
   };
 
   const checkoutHandler = () => {

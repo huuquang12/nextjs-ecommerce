@@ -8,7 +8,7 @@ import {
   Typography,
   TextField,
   CircularProgress,
-  Box
+  Box,
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import axios from "axios";
@@ -93,20 +93,29 @@ export default function ProductScreen(props) {
   const classes = useStyles();
 
   const addToCartHandler = async () => {
-    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
-    const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(
-      `http://localhost:8000/api/products/${product._id}`
-    );
+    if (!userInfo) {
+      const existItem = state.cart.cartItems.find((x) => x._id === product._id);
+      const quantity = existItem ? existItem.quantity + 1 : 1;
+      const { data } = await axios.get(
+        `http://localhost:8000/api/products/${product._id}`
+      );
 
-    if (data.countInStock < quantity) {
-      enqueueSnackbar("Sorry. This product is out of stock", {
-        variant: "error",
-      });
-      return;
+      if (data.countInStock < quantity) {
+        enqueueSnackbar("Sorry. This product is out of stock", {
+          variant: "error",
+        });
+        return;
+      }
+      dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+      router.push("/cart");
+    } else {
+      const { data } = await axios.post(
+        `http://localhost:8000/api/carts/add/${product._id}`,
+        { userInfo }
+      );
+      dispatch({ type: "CART_UPDATE_ITEM", payload: data.cartItems });
+      router.reload();
     }
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
-    router.push("/cart");
   };
 
   return (

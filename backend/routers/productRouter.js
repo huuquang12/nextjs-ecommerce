@@ -157,7 +157,10 @@ productRouter.get("/", async (req, res) => {
 productRouter.get(
   "/:id",
   expressAsyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(
+      req.params.id,
+      "-reviews -description -category -brand -rating -numReviews -isFeatured"
+    );
     if (product) {
       res.send(product);
     } else {
@@ -262,7 +265,7 @@ productRouter.post(
       if (product) {
         res.status(201).send({
           message: "Product updated",
-        }); 
+        });
       } else {
         res.status(404).send({ message: "Product Not Found" });
       }

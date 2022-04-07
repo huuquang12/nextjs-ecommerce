@@ -78,22 +78,15 @@ function PlaceOrder() {
         }
       );
 
-      await axios.post(
-        "http://localhost:8000/api/products/updated",
-        {
-          orderItems: cartItems,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
-      await axios.delete(`http://localhost:8000/api/carts/${userInfo._id}`, {
-        headers: {
-          authorization: `Bearer ${userInfo.token}`,
-        },
+      console.log("place order");
+
+      await axios.post("http://localhost:8000/api/products/updated", {
+        orderItems: cartItems,
       });
+
+      console.log("updated");
+      await axios.get(`http://localhost:8000/api/carts/${userInfo._id}`);
+      console.log("delete cart");
       dispatch({ type: "CART_CLEAR" });
       Cookies.remove("cartItems");
       setLoading(false);
@@ -185,7 +178,7 @@ function PlaceOrder() {
                             </NextLink>
                           </TableCell>
                           <TableCell align="right">
-                            <Typography>{item.qty}</Typography>
+                            <Typography>{item.quantity}</Typography>
                           </TableCell>
                           <TableCell align="right">
                             <Typography color="secondary">
