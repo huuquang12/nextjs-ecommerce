@@ -10,7 +10,7 @@ const cartRouter = express.Router();
 cartRouter.get(
   "/:id",
   expressAsyncHandler(async (req, res) => {
-    const cart = await Cart.findOneAndRemove({ user: req.params.id });
+    const cart = await Cart.findByIdAndUpdate({ cartItems: [] });
   })
 );
 
@@ -18,7 +18,8 @@ cartRouter.get(
   "/user/:id",
   expressAsyncHandler(async (req, res) => {
     const userId = req.params.id;
-    let cart = await Cart.findOne({ user: userId });
+    let cart;
+    cart = await Cart.findOne({ user: userId });
     if (!cart) {
       cart = new Cart({ user: userId });
     }
@@ -29,19 +30,24 @@ cartRouter.get(
 cartRouter.post(
   "/save",
   expressAsyncHandler(async (req, res) => {
-    const existCart = await Cart.find({ user: req.body.user._id });
-    if (existCart.length <= 0) {
-      const cart = new Cart({ user: req.body.user._id });
-      cart.cartItem = req.body.cartItems.map((item) => {
-        const productId = item._id;
+    const cart = await Cart.findOne({ user: req.body.user._id });
+    console.log(cart);
+    cart.cartItem = req.body.cartItems.map((item) => {
+      const productId = item._id;
+      const itemIndex = cart.cartItems.findIndex(
+        (p) => p.productId == productId
+      );
+      if (itemIndex > -1) {
+        cart.cartItems[itemIndex].quantity += item.quantity;
+      } else {
         cart.cartItems.push({
           ...item,
           productId: productId,
         });
-      });
-      cart.save();
-      res.send(cart);
-    }
+      }
+    });
+    await cart.save();
+    res.send(cart);
   })
 );
 
@@ -70,10 +76,6 @@ cartRouter.post(
       if (itemIndex > -1) {
         // if product exists in the cart, update the quantity
         cart.cartItems[itemIndex].quantity++;
-        cart.cartItems[itemIndex].price =
-          cart.cartItems[itemIndex].quantity * product.price;
-        cart.totalQty++;
-        cart.totalCost += product.price;
       } else {
         // if product does not exists in cart, find it in the db to retrieve its price and add new item
         cart.cartItems.push({
@@ -85,8 +87,6 @@ cartRouter.post(
           price: product.price,
           image: product.image,
         });
-        cart.totalQty++;
-        cart.totalCost += product.price;
       }
 
       // if the user is logged in, store the user's id and save cart to the db

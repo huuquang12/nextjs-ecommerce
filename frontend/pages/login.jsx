@@ -92,8 +92,7 @@ export default function Login() {
           user,
         }
       );
-      console.log(saveCart);
-      // dispatch({ type: "CART_UPDATE", payload: saveCart.data.cartItems });
+      dispatch({ type: "CART_UPDATE", payload: saveCart.data.cartItems });
       router.push(redirect || "/");
     } catch (err) {
       enqueueSnackbar(getError(err), { variant: "error" });
