@@ -51,7 +51,10 @@ export default function Register() {
   const router = useRouter();
   const { redirect } = router.query;
   const { state, dispatch } = useContext(Store);
-  const { userInfo } = state;
+  const {
+    userInfo,
+    cart: { cartItems },
+  } = state;
 
   useEffect(() => {
     if (userInfo) {
@@ -76,9 +79,24 @@ export default function Register() {
       );
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", data);
+      const user = data;
+
+      const cart = await axios.get(
+        `http://localhost:8000/api/carts/user/${data._id}`
+      );
+      dispatch({ type: "CART_UPDATE", payload: cart.data.cartItems });
+
+      const saveCart = await axios.post(
+        `http://localhost:8000/api/carts/save`,
+        {
+          cartItems,
+          user,
+        }
+      );
+      dispatch({ type: "CART_UPDATE", payload: saveCart.data.cartItems });
       router.push(redirect || "/");
     } catch (err) {
-      enqueueSnackbar("Email already exists", { variant: "error" });
+      enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
 

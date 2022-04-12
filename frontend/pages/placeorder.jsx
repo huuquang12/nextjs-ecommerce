@@ -78,15 +78,10 @@ function PlaceOrder() {
         }
       );
 
-      console.log("place order");
-
       await axios.post("http://localhost:8000/api/products/updated", {
         orderItems: cartItems,
       });
-
-      console.log("updated");
-      await axios.get(`http://localhost:8000/api/carts/${userInfo._id}`);
-      console.log("delete cart");
+      await axios.get(`http://localhost:8000/api/carts/remove/${userInfo._id}`);
       dispatch({ type: "CART_CLEAR" });
       Cookies.remove("cartItems");
       setLoading(false);

@@ -25,23 +25,6 @@ export default function Home(props) {
     cart: { cartItems },
   } = state;
 
-  // const fetchCartItems = async () => {
-  //   try {
-  //     if (userInfo) {
-  //       const { data } = await axios.get(
-  //         `http://localhost:8000/api/carts/user/${userInfo._id}`
-  //       );
-  //       console.log(data);
-  //     }
-  //   } catch (err) {
-  //     enqueueSnackbar(getError(err), { variant: "error" });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchCartItems();
-  // }, []);
-
   const addToCartHandler = async (product) => {
     if (!userInfo) {
       const existItem = state.cart.cartItems.find(

@@ -78,7 +78,7 @@ export default function Login() {
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", JSON.stringify(data));
       const user = data;
-      console.log("log in");
+      
       const cart = await axios.get(
         `http://localhost:8000/api/carts/user/${data._id}`
       );

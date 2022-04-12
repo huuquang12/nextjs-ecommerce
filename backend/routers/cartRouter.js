@@ -8,9 +8,19 @@ import User from "../models/userModel.js";
 const cartRouter = express.Router();
 
 cartRouter.get(
-  "/:id",
+  "/remove/:id",
   expressAsyncHandler(async (req, res) => {
-    const cart = await Cart.findByIdAndUpdate({ cartItems: [] });
+    const cart = await Cart.findOne({ user: req.params.id });
+    if (cart) {
+      await Cart.findByIdAndDelete(cart._id);
+      res.status(201).send({
+        message: "Cart removed",
+      });
+    } else {
+      res.status(404).send({
+        message: "Cart not found",
+      });
+    }
   })
 );
 
@@ -22,6 +32,7 @@ cartRouter.get(
     cart = await Cart.findOne({ user: userId });
     if (!cart) {
       cart = new Cart({ user: userId });
+      cart.save();
     }
     res.send(cart);
   })
@@ -31,7 +42,6 @@ cartRouter.post(
   "/save",
   expressAsyncHandler(async (req, res) => {
     const cart = await Cart.findOne({ user: req.body.user._id });
-    console.log(cart);
     cart.cartItem = req.body.cartItems.map((item) => {
       const productId = item._id;
       const itemIndex = cart.cartItems.findIndex(

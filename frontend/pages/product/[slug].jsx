@@ -43,7 +43,7 @@ export default function ProductScreen(props) {
 
   const [reviews, setReviews] = useState([]);
   const [hover, setHover] = useState(-1);
-  const [rating, setRating] = useState(2);
+  const [rating, setRating] = useState(4);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 

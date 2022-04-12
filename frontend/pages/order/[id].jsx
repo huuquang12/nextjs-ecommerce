@@ -106,6 +106,7 @@ function Order({ params }) {
           }
         );
         dispatch({ type: "FETCH_SUCCESS", payload: data });
+      
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
