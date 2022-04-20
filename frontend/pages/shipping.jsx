@@ -18,6 +18,7 @@ import LocalShippingIcon from "@material-ui/icons/LocalShipping";
 import dynamic from "next/dynamic";
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleMap from '../components/GoogleMap';
+import MapboxMap from '../components/mapbox-map';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -102,7 +103,10 @@ export default function Shipping(props) {
         // aria-labelledby="simple-modal-title"
         // aria-describedby="simple-modal-description"
       >  
-        <div style={{margin:"auto", width:"600px",  height:"600px"}}><GoogleMap></GoogleMap></div>
+        <div style={{margin:"auto", width:"600px",  height:"600px"}}><GoogleMap
+        setValue = {(value) => setValue("address",value)}
+        ></GoogleMap>
+        </div>
       </Modal>
 
 
@@ -159,6 +163,7 @@ export default function Shipping(props) {
                 onClick={()=> 
                   handleOpen()
                 }
+                
                   variant="outlined"
                   fullWidth
                   id="address"

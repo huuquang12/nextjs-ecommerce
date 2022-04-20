@@ -2,7 +2,7 @@ import * as React from "react";
 import MapboxMap from "./mapbox-map";
 import MapLoadingHolder from "./map-loading-holder";
 
-function App() {
+function App({setValue}) {
   const [loading, setLoading] = React.useState(true);
   const handleMapLoading = () => setLoading(false);
 
@@ -11,6 +11,7 @@ function App() {
         <div className="map-wrapper">
           <MapboxMap
             onLoaded={handleMapLoading}
+            handleClickMarker = {(value) => setValue(value)}
           />
         </div>
         {loading && <MapLoadingHolder className="loading-holder" />}
