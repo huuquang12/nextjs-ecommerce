@@ -54,11 +54,7 @@ function reducer(state, action) {
       return {
         ...state,
         userInfo: null,
-        cart: {
-          cartItems: [],
-          shippingAddress: { location: {} },
-          paymentMethod: "",
-        },
+        cart: { cartItems: [], shippingAddress: {}, paymentMethod: "" },
       };
     case "SAVE_SHIPPING_ADDRESS":
       return {
@@ -68,17 +64,6 @@ function reducer(state, action) {
           shippingAddress: {
             ...state.cart.shippingAddress,
             ...action.payload,
-          },
-        },
-      };
-    case "SAVE_SHIPPING_ADDRESS_MAP_LOCATION":
-      return {
-        ...state,
-        cart: {
-          ...state.cart,
-          shippingAddress: {
-            ...state.cart.shippingAddress,
-            location: action.payload,
           },
         },
       };

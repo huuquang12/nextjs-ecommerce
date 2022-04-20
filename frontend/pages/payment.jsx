@@ -70,8 +70,8 @@ export default function Payment() {
                 onChange={(e) => setPaymentMethod(e.target.value)}
               >
                 <FormControlLabel
-                  label="PayPal"
-                  value="PayPal"
+                  label="Pay with Paypal"
+                  value="Pay"
                   control={<Radio color="primary" />}
                 ></FormControlLabel>
                 <FormControlLabel

@@ -28,6 +28,7 @@ import orderRouter from "./routers/orderRouter.js";
 import keyRouter from "./routers/keyRouter.js";
 import adminRouter from "./routers/adminRouter.js";
 import cartRouter from "./routers/cartRouter.js";
+import runeRouter from "./routers/runeRouter.js";
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use("/api/orders", orderRouter);
 app.use("/api/keys", keyRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/carts", cartRouter);
+app.use("/api/runes/", runeRouter);
 // app.use('/api/uploads', uploadRouter);
 
 app.use((err, req, res, next) => {

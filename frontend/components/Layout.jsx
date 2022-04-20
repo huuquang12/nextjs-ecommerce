@@ -26,6 +26,7 @@ import ArrowForwardIosTwoToneIcon from "@material-ui/icons/ArrowForwardIosTwoTon
 import CancelIcon from "@material-ui/icons/Cancel";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import RedeemIcon from "@material-ui/icons/Redeem";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -147,6 +148,8 @@ function Layout({ title, description, children }) {
     dispatch({ type: "USER_LOGOUT" });
     Cookies.remove("userInfo");
     Cookies.remove("cartItems");
+    Cookies.remove("shippinhAddress");
+    Cookies.remove("paymentMethod");
     router.push("/");
   };
 
@@ -277,6 +280,15 @@ function Layout({ title, description, children }) {
                 alignItems: "center",
               }}
             >
+              <NextLink href="/runes" passHref>
+                <Link>
+                  <div className={classes.divStyle}>
+                    <IconButton aria-label="cart">
+                      <RedeemIcon />
+                    </IconButton>
+                  </div>
+                </Link>
+              </NextLink>
               <NextLink href="/cart" passHref>
                 <Link>
                   <div className={classes.divStyle}>
@@ -361,7 +373,9 @@ function Layout({ title, description, children }) {
         </AppBar>
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>
-          <Typography>All rights reserved</Typography>
+          <Typography style={{ paddingTop: "66px" }}>
+            All rights reserved
+          </Typography>
         </footer>
       </ThemeProvider>
     </div>

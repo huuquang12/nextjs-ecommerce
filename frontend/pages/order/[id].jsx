@@ -226,16 +226,6 @@ function Order({ params }) {
                 <ListItem>
                   {shippingAddress.address}, {shippingAddress.city},{" "}
                   {shippingAddress.postalCode}
-                  &nbsp;
-                  {shippingAddress.location && (
-                    <Link
-                      variant="button"
-                      target="_new"
-                      href={`https://maps.google.com?q=${shippingAddress.location.lat},${shippingAddress.location.lng}`}
-                    >
-                      Show On Map
-                    </Link>
-                  )}
                 </ListItem>
                 <ListItem>
                   Status:{" "}

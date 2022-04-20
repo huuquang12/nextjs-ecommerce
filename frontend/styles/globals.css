@@ -109,3 +109,34 @@ body,
   border-radius: 4px;
   font-size: 1.2rem;
 }
+
+.runeBtn {
+  border-radius:10px;
+  width: 115px;
+  height:115px;
+  border-color:#dde2e9;
+  background:#dde2e9;
+  text-align: center;
+  padding: 8px;
+  color: "#808a9d"; 
+}
+
+.runeBtn:hover {
+  border-color:#0892d0;
+  background:#0892d0;
+  cursor: pointer;
+}
+
+.runeBtn2 {
+  border-radius:10px;
+  width: 115px;
+  height:115px;
+  border-color:#dde2e9;
+  background:#0892d0;
+  text-align: center;
+  padding: 8px;
+}
+
+.runeBtn2:hover {
+  cursor: pointer;
+}

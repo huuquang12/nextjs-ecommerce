@@ -5,7 +5,7 @@ import { createTheme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    marginLeft: "20px",
+    marginLeft: "15px",
     "& > *": {
       margin: theme.spacing(1),
     },
