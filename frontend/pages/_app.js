@@ -1,8 +1,11 @@
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { useEffect } from "react";
 import "../styles/globals.css";
 import { StoreProvider } from "../utils/Store";
-import { SnackbarProvider } from 'notistack';
+import { SnackbarProvider } from "notistack";
+import axios from "axios";
+import Cookies from "js-cookie";
+import process from "process";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -11,15 +14,28 @@ function MyApp({ Component, pageProps }) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
+
+  if (process.browser) {
+    const userInfo = JSON.parse(Cookies.get("userInfo"));
+    // console.log(userInfo._id);
+    if (!userInfo) {
+      router.push("/login");
+    } else {
+      const checkIn = async () => {
+        await axios.get(`http://localhost:8000/api/runes/add/${userInfo._id}`);
+      };
+      checkIn();
+    }
+  }
+
   return (
-    <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "center" }}>
       <StoreProvider>
         <PayPalScriptProvider deferLoading={true}>
           <Component {...pageProps} />
         </PayPalScriptProvider>
       </StoreProvider>
     </SnackbarProvider>
-
   );
 }
 
