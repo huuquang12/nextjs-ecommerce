@@ -19,6 +19,9 @@ import dynamic from "next/dynamic";
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleMap from '../components/GoogleMap';
 import MapboxMap from '../components/mapbox-map';
+import { useSnackbar } from "notistack";
+import { getError } from "../utils/error";
+import axios from "axios";
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -46,11 +49,10 @@ export default function Shipping(props) {
     formState: { errors },
     setValue,
   } = useForm();
-
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
-
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const handleOpen = () => {
     setOpen(true);
   };
@@ -71,12 +73,11 @@ export default function Shipping(props) {
       router.push("/login?redirect=/shipping");
     }
     setValue("fullName", shippingAddress.fullName);
-    setValue("address", shippingAddress.address);
+    setValue("address", userInfo?.coordinate?.lng ? JSON.stringify(userInfo?.coordinate) : "");
     setValue("city", shippingAddress.city); 
     setValue("postalCode", shippingAddress.postalCode);
     setValue("phone", shippingAddress.phone);
-  }, []);
-
+  }, [userInfo]);
   const classes = useStyles();
   const submitHandler = ({ fullName, address, city, postalCode, phone }) => {
     dispatch({
@@ -92,7 +93,22 @@ export default function Shipping(props) {
     });
     router.push("/payment");
   };
-
+  const  handleUpdateAddress = async (value) => {
+    closeSnackbar();
+    try {
+      const { data } = await axios.put(
+        "http://localhost:8000/api/users/update-address",
+        {
+         address: value
+        },
+        { headers: { authorization: `Bearer ${userInfo.token}` } }
+      );
+      dispatch({ type: "USER_UPDATE_ADDRESS", payload: data });
+      enqueueSnackbar("Address user updated successfully", { variant: "success" });
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: "error" });
+    }
+  }
   return (
     <Layout title="Shipping Address">
       <CheckoutStep activeStep={1} />
@@ -104,7 +120,7 @@ export default function Shipping(props) {
         // aria-describedby="simple-modal-description"
       >  
         <div style={{margin:"auto", width:"600px",  height:"600px"}}><GoogleMap
-        setValue = {(value) => setValue("address",value)}
+        setValue = {(value) => handleUpdateAddress(value)}
         ></GoogleMap>
         </div>
       </Modal>

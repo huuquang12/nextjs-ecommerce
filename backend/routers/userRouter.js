@@ -46,6 +46,7 @@ userRouter.post(
           email: user.email,
           isAdmin: user.isAdmin,
           token: generateToken(user),
+          coordinate: user.coordinate,
         });
         return;
 
@@ -76,6 +77,22 @@ userRouter.put(
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      coordinate: user.coordinate,
+    });
+  })
+);
+
+// update address 
+userRouter.put(
+  "/update-address",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    user.coordinate = req.body.address;
+    await user.save();
+    
+    res.send({
+      coordinate : user.coordinate
     });
   })
 );
