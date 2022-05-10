@@ -33,12 +33,12 @@ function MapboxMap({
 
     if (typeof window === "undefined" || node === null) return;
 
-    // Thanh Xuan - Ha Noi
+    // Center
     const mapboxMap = new mapboxgl.Map({
       container: node,
       accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
       style: "mapbox://styles/mapbox/streets-v11",
-      center: [105.800880, 20.994040],
+      center: [userInfo?.coordinate?.lng || 105.800880,userInfo?.coordinate?.lat ||  20.994040],
       zoom: 15,
       ...initialOptions,
     });
@@ -61,9 +61,9 @@ function MapboxMap({
         accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "",
       })
     );
-    //create marker Thanh Xuan
+    //create marker
     const marker = new mapboxgl.Marker({ color: "red" })
-      .setLngLat([userInfo.coordinate.lng || 105.800880,userInfo.coordinate.lat ||  20.994040])
+      .setLngLat([userInfo?.coordinate?.lng || 105.800880,userInfo?.coordinate?.lat ||  20.994040])
       .addTo(mapboxMap);
       // const element = marker.getElement();
     // element.addEventListener("click", (e) => {

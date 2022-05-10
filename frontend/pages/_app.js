@@ -15,18 +15,18 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  if (process.browser) {
-    const userInfo = JSON.parse(Cookies.get("userInfo"));
-    // console.log(userInfo._id);
-    if (!userInfo) {
-      router.push("/login");
-    } else {
-      const checkIn = async () => {
-        await axios.get(`http://localhost:8000/api/runes/add/${userInfo._id}`);
-      };
-      checkIn();
-    }
-  }
+  // if (process.browser) {
+  //   const userInfo = JSON.parse(Cookies.get("userInfo"));
+  //   // console.log(userInfo._id);
+  //   if (!userInfo) {
+  //     router.push("/login");
+  //   } else {
+  //     const checkIn = async () => {
+  //       await axios.get(`http://localhost:8000/api/runes/add/${userInfo._id}`);
+  //     };
+  //     checkIn();
+  //   }
+  // }
 
   return (
     <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "center" }}>
