@@ -23,7 +23,7 @@
     "express-async-handler": "^1.2.0",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.1",
     "mongodb": "^4.4.0",
     "mongoose": "^6.2.4",
