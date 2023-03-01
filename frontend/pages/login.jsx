@@ -52,7 +52,6 @@ export default function Login() {
 
   const router = useRouter();
   const { redirect } = router.query;
-  console.log(redirect);
   const { state, dispatch } = useContext(Store);
   const {
     userInfo,
@@ -83,7 +82,6 @@ export default function Login() {
         `http://localhost:8000/api/carts/user/${data._id}`
       );
       dispatch({ type: "CART_UPDATE", payload: cart.data.cartItems });
-      console.log("get cart");
 
       const saveCart = await axios.post(
         `http://localhost:8000/api/carts/save`,

@@ -60,6 +60,7 @@ function PlaceOrder() {
     closeSnackbar();
     try {
       setLoading(true);
+
       const { data } = await axios.post(
         "http://localhost:8000/api/orders",
         {
@@ -78,14 +79,14 @@ function PlaceOrder() {
         }
       );
 
-      await axios.post("http://localhost:8000/api/products/updated", {
-        orderItems: cartItems,
-      });
-      await axios.get(`http://localhost:8000/api/carts/remove/${userInfo._id}`);
       dispatch({ type: "CART_CLEAR" });
       Cookies.remove("cartItems");
       setLoading(false);
       router.push(`/order/${data._id}`);
+      await axios.post("http://localhost:8000/api/products/updated", {
+        orderItems: cartItems,
+      });
+      await axios.get(`http://localhost:8000/api/carts/remove/${userInfo._id}`);
     } catch (err) {
       setLoading(false);
       enqueueSnackbar(getError(err), { variant: "error" });

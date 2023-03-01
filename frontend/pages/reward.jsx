@@ -18,11 +18,13 @@ import React, { useEffect, useContext, useState } from "react";
 import { Store } from "../utils/Store";
 import moment from "moment";
 import OpacityIcon from "@material-ui/icons/Opacity";
+import { useSnackbar } from "notistack";
 
 export default function Reward() {
   const router = useRouter();
   const { redirect } = router.query;
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
   const {
     userInfo,
@@ -117,7 +119,9 @@ export default function Reward() {
               </div>
             </div>
           </div>
-          <p style={{ color: "#757575", marginBottom: "15px", marginTop: "0px" }}>
+          <p
+            style={{ color: "#757575", marginBottom: "15px", marginTop: "0px" }}
+          >
             Choose from the rewards below to exchange your runes.
           </p>
           <Typography variant="subtitle1">Claim Rewards</Typography>
@@ -142,7 +146,27 @@ export default function Reward() {
                     <span style={{ color: "#757575" }}> Price:</span>
                     <OpacityIcon /> 200
                   </div>
-                  <span style={{ color: "#757575" }}> Supply: 67/100</span>
+                  <span>
+                    <Button
+                      variant="text"
+                      size="small"
+                      color="secondary"
+                      onClick={() => {
+                        if (userRunes > 200) {
+                          enqueueSnackbar("Exchange successfully", {
+                            variant: "success",
+                          });
+                          setUserRunes(userRunes - 200);
+                        } else {
+                          enqueueSnackbar("Not enough runes", {
+                            variant: "error",
+                          });
+                        }
+                      }}
+                    >
+                      Exchange
+                    </Button>
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -166,7 +190,27 @@ export default function Reward() {
                     <span style={{ color: "#757575" }}> Price:</span>
                     <OpacityIcon /> 500
                   </div>
-                  <span style={{ color: "#757575" }}> Supply: 67/100</span>
+                  <span>
+                    <Button
+                      variant="text"
+                      size="small"
+                      color="secondary"
+                      onClick={() => {
+                        if (userRunes > 500) {
+                          enqueueSnackbar("Exchange successfully", {
+                            variant: "success",
+                          });
+                          setUserRunes(userRunes - 200);
+                        } else {
+                          enqueueSnackbar("Not enough runes", {
+                            variant: "error",
+                          });
+                        }
+                      }}
+                    >
+                      Exchange
+                    </Button>
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -190,7 +234,27 @@ export default function Reward() {
                     <span style={{ color: "#757575" }}> Price:</span>
                     <OpacityIcon /> 800
                   </div>
-                  <span style={{ color: "#757575" }}> Supply: 23/50</span>
+                  <span>
+                    <Button
+                      variant="text"
+                      size="small"
+                      color="secondary"
+                      onClick={() => {
+                        if (userRunes > 800) {
+                          enqueueSnackbar("Exchange successfully", {
+                            variant: "success",
+                          });
+                          setUserRunes(userRunes - 200);
+                        } else {
+                          enqueueSnackbar("Not enough runes", {
+                            variant: "error",
+                          });
+                        }
+                      }}
+                    >
+                      Exchange
+                    </Button>
+                  </span>
                 </div>
               </CardContent>
             </Card>

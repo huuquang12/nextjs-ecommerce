@@ -17,6 +17,7 @@ import NextLink from "next/link";
 import useStyles from "../utils/styles";
 import OpacityIcon from '@material-ui/icons/Opacity';
 
+
 export default function Runes() {
   const router = useRouter();
   const { redirect } = router.query;
@@ -47,27 +48,6 @@ export default function Runes() {
       setUserRunes(0);
     }
   }, []);
-
-  async function addRunes() {
-    if (!userInfo) {
-      router.push("/login");
-    } else {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/runes/add/${userInfo._id}`
-      );
-      setUserRunes(data.runes);
-      setDaysStreak(data.daysInARow);
-      setCollected(true);
-    }
-  }
-
-  function getRuneBtn(i) {
-    if (i === daysStreak && !collected) {
-      return "runeBtn2";
-    } else {
-      return "runeBtn";
-    }
-  }
 
   const days = [10, 10, 10, 20, 20, 20, 50];
 
@@ -172,18 +152,12 @@ export default function Runes() {
                 bonus runes
               </p>
             </div>
-            <Button
-              style={collected ? styles.cantCollect : styles.collect}
-              onClick={() => addRunes()}
-            >
-              Collect Runes
-            </Button>
           </div>
 
           <div style={styles.claimrow}>
             {days.map((e, i) => (
               <>
-                <div className={getRuneBtn(i)}>
+                <div className="runeBtn">
                   <p stle={{ fontSize: "12px" }}>{`Day ${i + 1}`}</p>
                   {i > daysStreak - 1 ? (
                     <img

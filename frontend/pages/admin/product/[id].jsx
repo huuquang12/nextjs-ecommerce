@@ -16,7 +16,7 @@ import dynamic from "next/dynamic";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useContext, useReducer, useState } from 'react';
+import React, { useEffect, useContext, useReducer, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Layout from "../../../components/Layout";
 import { getError } from "../../../utils/error";
@@ -89,7 +89,7 @@ function ProductEdit({ params }) {
           setValue("slug", data.slug);
           setValue("price", data.price);
           setValue("image", data.image);
-          setValue('featuredImage', data.featuredImage);
+          setValue("featuredImage", data.featuredImage);
           setIsFeatured(data.isFeatured);
           setValue("category", data.category);
           setValue("brand", data.brand);
@@ -103,7 +103,7 @@ function ProductEdit({ params }) {
     }
   }, []);
 
-  const uploadHandler = async (e, imageField = 'image') => {
+  const uploadHandler = async (e, imageField = "image") => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
@@ -167,6 +167,8 @@ function ProductEdit({ params }) {
       enqueueSnackbar(getError(err), { variant: "error" });
     }
   };
+
+
   const [isFeatured, setIsFeatured] = useState(false);
 
   return (
@@ -327,7 +329,7 @@ function ProductEdit({ params }) {
                         control={control}
                         defaultValue=""
                         rules={{
-                          required: true,
+                          required: false,
                         }}
                         render={({ field }) => (
                           <TextField
@@ -337,7 +339,7 @@ function ProductEdit({ params }) {
                             label="Featured Image"
                             error={Boolean(errors.image)}
                             helperText={
-                              errors.image ? 'Featured Image is required' : ''
+                              errors.image ? "Featured Image is required" : ""
                             }
                             {...field}
                           ></TextField>
@@ -349,7 +351,7 @@ function ProductEdit({ params }) {
                         Upload File
                         <input
                           type="file"
-                          onChange={(e) => uploadHandler(e, 'featuredImage')}
+                          onChange={(e) => uploadHandler(e, "featuredImage")}
                           hidden
                         />
                       </Button>

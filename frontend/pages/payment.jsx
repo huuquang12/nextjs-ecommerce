@@ -71,7 +71,7 @@ export default function Payment() {
               >
                 <FormControlLabel
                   label="Pay with Paypal"
-                  value="Pay"
+                  value="Paypal"
                   control={<Radio color="primary" />}
                 ></FormControlLabel>
                 <FormControlLabel

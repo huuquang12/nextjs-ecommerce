@@ -25,7 +25,7 @@ import { getError } from "../utils/error";
 const useStyles = makeStyles({
   paperStyle: {
     padding: 20,
-    height: 630,
+    height: 530,
     width: 400,
     margin: "30px auto",
   },

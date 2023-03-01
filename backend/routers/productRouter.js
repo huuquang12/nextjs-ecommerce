@@ -263,11 +263,13 @@ productRouter.post(
         countInStock: item.countInStock - item.quantity,
       });
       if (product) {
-        res.status(201).send({
+        res.status(201).json({
           message: "Product updated",
         });
+        // console.log("Product updated");
       } else {
-        res.status(404).send({ message: "Product Not Found" });
+        res.status(404).json({ message: "Product Not Found" });
+        // console.log("Product not found");
       }
     });
   })

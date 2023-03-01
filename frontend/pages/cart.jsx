@@ -51,7 +51,6 @@ function Cart(props) {
         `http://localhost:8000/api/carts/update/item/${item.productId}`,
         { userInfo, quantity }
       );
-      console.log("update");
       dispatch({ type: "CART_UPDATE", payload: data.cartItems });
     }
   };

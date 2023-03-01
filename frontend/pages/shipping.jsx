@@ -128,7 +128,7 @@ export default function Shipping(props) {
               defaultValue=""
               rules={{
                 required: true,
-                minLength: 4,
+                minLength: 2,
               }}
               render={({ field }) => (
                 <TextField
@@ -140,7 +140,7 @@ export default function Shipping(props) {
                   helperText={
                     errors.fullName
                       ? errors.fullName.type === "minLength"
-                        ? "Full Name must be at least 4 characters"
+                        ? "Full Name must be at least 2 characters"
                         : "Full Name is required"
                       : ""
                   }

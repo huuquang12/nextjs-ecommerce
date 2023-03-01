@@ -16,12 +16,13 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   if (process.browser) {
-    const userInfo = JSON.parse(Cookies.get("userInfo"));
+    const userInfo = Cookies.get("userInfo")
+      ? JSON.parse(Cookies.get("userInfo"))
+      : null;
     // console.log(userInfo._id);
-    if (!userInfo) {
-      router.push("/login");
-    } else {
+    if (userInfo) {
       const checkIn = async () => {
+        await axios.get(`http://localhost:8000/api/runes/user/${userInfo._id}`);
         await axios.get(`http://localhost:8000/api/runes/add/${userInfo._id}`);
       };
       checkIn();

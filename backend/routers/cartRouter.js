@@ -13,13 +13,15 @@ cartRouter.get(
     const cart = await Cart.findOne({ user: req.params.id });
     if (cart) {
       await Cart.findByIdAndDelete(cart._id);
-      res.status(201).send({
-        message: "Cart removed",
-      });
+      // res.status(201).json({
+      //   message: "Cart removed",
+      // });
+      console.log("Cart removed");
     } else {
-      res.status(404).send({
-        message: "Cart not found",
-      });
+      // res.status(404).json({
+      //   message: "Cart not found",
+      // });
+      console.log("Cart not found");
     }
   })
 );
