@@ -28,8 +28,8 @@ function reducer(state, action) {
       );
       const cartItems = existItem
         ? state.cart.cartItems.map((item) =>
-            item.name === existItem.name ? newItem : item
-          )
+          item.name === existItem.name ? newItem : item
+        )
         : [...state.cart.cartItems, newItem];
       Cookies.set("cartItems", JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
@@ -50,6 +50,8 @@ function reducer(state, action) {
       return { ...state, cart: { ...state.cart, cartItems: [] } };
     case "USER_LOGIN":
       return { ...state, userInfo: action.payload };
+    case "USER_UPDATE_ADDRESS":
+      return { ...state, userInfo: { ...state.userInfo, coordinate: action.payload.coordinate } };
     case "USER_LOGOUT":
       return {
         ...state,

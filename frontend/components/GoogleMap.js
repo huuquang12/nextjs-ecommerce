@@ -2,7 +2,7 @@ import * as React from "react";
 import MapboxMap from "./mapbox-map";
 import MapLoadingHolder from "./map-loading-holder";
 
-function App({setValue}) {
+function App({setValue , address}) {
   const [loading, setLoading] = React.useState(true);
   const handleMapLoading = () => setLoading(false);
 
