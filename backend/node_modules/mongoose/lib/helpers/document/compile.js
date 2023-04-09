@@ -1,5 +1,6 @@
 'use strict';
 
+const clone = require('../../helpers/clone');
 const documentSchemaSymbol = require('../../helpers/symbols').documentSchemaSymbol;
 const internalToObjectOptions = require('../../options').internalToObjectOptions;
 const utils = require('../../utils');
@@ -17,8 +18,20 @@ const isPOJO = utils.isPOJO;
 exports.compile = compile;
 exports.defineKey = defineKey;
 
-/*!
+const _isEmptyOptions = Object.freeze({
+  minimize: true,
+  virtuals: false,
+  getters: false,
+  transform: false
+});
+
+/**
  * Compiles schemas.
+ * @param {Object} tree
+ * @param {Any} proto
+ * @param {String} prefix
+ * @param {Object} options
+ * @api private
  */
 
 function compile(tree, proto, prefix, options) {
@@ -37,8 +50,15 @@ function compile(tree, proto, prefix, options) {
   }
 }
 
-/*!
+/**
  * Defines the accessor named prop on the incoming prototype.
+ * @param {Object} options
+ * @param {String} options.prop
+ * @param {Boolean} options.subprops
+ * @param {Any} options.prototype
+ * @param {String} [options.prefix]
+ * @param {Object} options.options
+ * @api private
  */
 
 function defineKey({ prop, subprops, prototype, prefix, options }) {
@@ -91,7 +111,7 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
             configurable: true,
             writable: false,
             value: function() {
-              return utils.clone(_this.get(path, null, {
+              return clone(_this.get(path, null, {
                 virtuals: this &&
                   this.schema &&
                   this.schema.options &&
@@ -130,12 +150,6 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
             value: true
           });
 
-          const _isEmptyOptions = Object.freeze({
-            minimize: true,
-            virtuals: false,
-            getters: false,
-            transform: false
-          });
           Object.defineProperty(nested, '$isEmpty', {
             enumerable: false,
             configurable: true,
