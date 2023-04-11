@@ -21,7 +21,7 @@
     "axios": "^0.26.0",
     "chart.js": "^3.4.1",
     "js-cookie": "^2.2.1",
-    "mapbox-gl": "^2.7.1",
+    "mapbox-gl": "^2.13.0",
     "moment": "^2.29.1",
     "mongoose": "^6.2.6",
     "next": "^12.1.0",
