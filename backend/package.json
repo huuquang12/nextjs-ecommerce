@@ -9,7 +9,7 @@
   "author": "duannx",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.0",
+    "bcrypt": "^6.0.0",
     "cloudinary": "^1.28.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
